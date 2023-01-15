@@ -1,0 +1,40 @@
+{
+  "make": [
+    "BMW",
+    "Hyundai",
+    "Mitsubishi",
+    "Mazda",
+    "Nissan",
+    "Subaru",
+    "Toyota",
+    "Jaguar",
+    "Audi",
+    "Honda",
+    "Bentley",
+    "Citroen",
+    "Infiniti",
+    "Opel",
+    "Mercedes-Benz",
+    "Volkswagen",
+    "Ford",
+    "Jaguar"
+  ],
+  "model": [
+    "F-PACE",
+    "X5",
+    "A5",
+    "RS 5",
+    "IONIQ 5",
+    "Lancer Evolution",
+    "Outlander",
+    "RAV4 Hybrid ",
+    "Camry",
+    "CR-V",
+    "Continental",
+    "Bentayga",
+    "XF",
+    "XE",
+    "F-Pace",
+    "XJ"
+  ]
+}
