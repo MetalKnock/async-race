@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createCar, getCarsOnCurrentPage, updateCar } from '../../api/Car';
+import Button from '../../Components/Button';
 import Car from '../../Components/Car';
-import { Path, URL } from '../../const/const';
-import { ICar, ICarCreate, ICars } from '../../types/data';
+import { CARS_PER_PAGE, DEFAULT_COLOR_INPUT, INIT_SELECTED_CAR } from '../../const/const';
+import { ICar, ICarCreate, ICars, IGetCars } from '../../types/data';
 import { getRandomNData } from '../../utils/common';
 import styles from './Garage.module.scss';
 
@@ -9,88 +11,78 @@ export default function Garage() {
   const [page, setPage] = useState(1);
   const [cars, setCars] = useState<ICars>([]);
   const [carsQuantity, setCarsQuantity] = useState(0);
-  const [selectedCar, setSelectedCar] = useState<ICar>({ name: '', color: '#000000', id: 0 });
+  const [selectedCar, setSelectedCar] = useState<ICar>(INIT_SELECTED_CAR);
   const [inputNameUpdate, setInputNameUpdate] = useState('');
-  const [inputColorUpdate, setInputColorUpdate] = useState('#000000');
+  const [inputColorUpdate, setInputColorUpdate] = useState(DEFAULT_COLOR_INPUT);
 
   const name = useRef<HTMLInputElement | null>(null);
   const color = useRef<HTMLInputElement | null>(null);
   const nameUpdate = useRef<HTMLInputElement | null>(null);
   const colorUpdate = useRef<HTMLInputElement | null>(null);
 
-  const getCarsOnCurrentPage = async () => {
-    try {
-      const response = await fetch(`${URL}${Path.garage}?_limit=7&_page=${page}`);
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      setCarsQuantity(Number(response.headers.get('x-total-count')));
-      const result: ICars | null = await response.json();
-      if (result) {
-        setCars(result);
-      }
-    } catch (error) {
-      console.error(error);
+  const numberOfPages = Math.ceil(carsQuantity / CARS_PER_PAGE);
+
+  const handleClickPrev = () => {
+    if (page > 1) {
+      setPage(page - 1);
     }
   };
 
-  const createCar = async (data: ICarCreate) => {
-    await fetch(`${URL}${Path.garage}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-  };
-
-  const updateCar = async (data: ICarCreate) => {
-    await fetch(`${URL}${Path.garage}/${selectedCar.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-  };
-
-  const handleClickPrev = () => page > 1 && setPage(page - 1);
-
   const handleClickNext = () => {
-    if (page < Math.ceil(carsQuantity / 7)) {
+    if (page < numberOfPages) {
       setPage(page + 1);
     }
   };
 
-  const handleClickRandomButton = () => {
-    Promise.all(getRandomNData(100).map((data) => createCar(data))).then(() => {
-      getCarsOnCurrentPage();
-    });
-  };
-
-  const handleSubmitCreate = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (name.current && color.current) {
-      const data: ICarCreate = { name: name.current.value, color: color.current.value };
-      Promise.resolve(createCar(data)).then(() => getCarsOnCurrentPage());
+  const handleClickRandomButton = async () => {
+    await Promise.all(getRandomNData(100).map((data) => createCar(data)));
+    const result: IGetCars = await getCarsOnCurrentPage(page);
+    setCarsQuantity(result.quantity);
+    if (result.result) {
+      setCars(result.result);
     }
   };
 
-  const handleSubmitUpdate = (e: React.FocusEvent<HTMLFormElement>) => {
+  const handleSubmitCreate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (name.current && color.current) {
+      const data: ICarCreate = {
+        name: name.current.value,
+        color: color.current.value,
+      };
+      await createCar(data);
+      const result: IGetCars = await getCarsOnCurrentPage(page);
+      setCarsQuantity(result.quantity);
+      if (result.result) {
+        setCars(result.result);
+      }
+    }
+  };
+
+  const handleSubmitUpdate = async (e: React.FocusEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (nameUpdate.current && colorUpdate.current) {
-      const data: ICarCreate = { name: nameUpdate.current.value, color: colorUpdate.current.value };
-      Promise.resolve(updateCar(data)).then(() => getCarsOnCurrentPage());
+      const data: ICarCreate = {
+        name: nameUpdate.current.value,
+        color: colorUpdate.current.value,
+      };
+      await updateCar(data, selectedCar.id);
+      const result: IGetCars = await getCarsOnCurrentPage(page);
+      setCarsQuantity(result.quantity);
+      if (result.result) {
+        setCars(result.result);
+      }
+      setSelectedCar(INIT_SELECTED_CAR);
     }
   };
 
   const handleChangeNameUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value) {
+    if (e.target) {
       setInputNameUpdate(e.target.value);
     }
   };
   const handleChangeColorUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value) {
+    if (e.target) {
       setInputColorUpdate(e.target.value);
     }
   };
@@ -101,9 +93,17 @@ export default function Garage() {
     }
   }, [cars]);
 
-  useEffect(() => {
-    getCarsOnCurrentPage();
+  const fetchApi = useCallback(async () => {
+    const result = await getCarsOnCurrentPage(page);
+    setCarsQuantity(result.quantity);
+    if (result.result) {
+      setCars(result.result);
+    }
   }, [page]);
+
+  useEffect(() => {
+    fetchApi();
+  }, [fetchApi]);
 
   useEffect(() => {
     if (carsQuantity > 0) {
@@ -137,31 +137,44 @@ export default function Garage() {
             onChange={handleChangeColorUpdate}
           />
 
-          <button type="submit">update</button>
+          <button type="submit" disabled={selectedCar === INIT_SELECTED_CAR}>
+            update
+          </button>
         </form>
         <div className={styles.garage__inputsButtons}>
           <button type="button">start</button>
           <button type="button">reset</button>
-          <button className={styles.garage__1} type="button" onClick={handleClickRandomButton}>
-            random
-          </button>
+          <Button
+            className={styles.garage__random}
+            title="random"
+            disabled={false}
+            handleClick={handleClickRandomButton}
+          />
         </div>
       </div>
       <h1 className={styles.garage__title}>Garage ({carsQuantity})</h1>
       <div className={styles.garage__page}>page #{page}</div>
-      <button className={styles.garage__buttonPrev} type="button" onClick={handleClickPrev}>
-        Prev
-      </button>
-      <button className={styles.garage__buttonNext} type="button" onClick={handleClickNext}>
-        Next
-      </button>
-
+      <Button
+        className={styles.garage__buttonPrev}
+        title="prev"
+        disabled={page === 1}
+        handleClick={handleClickPrev}
+      />
+      <Button
+        className={styles.garage__buttonNext}
+        title="next"
+        disabled={page === numberOfPages}
+        handleClick={handleClickNext}
+      />
       <div>
         {cars.map((car) => (
           <Car
             key={car.id}
             data={car}
+            page={page}
             selectedCar={selectedCar}
+            setCarsQuantity={setCarsQuantity}
+            setCars={setCars}
             getCarsOnCurrentPage={getCarsOnCurrentPage}
             setSelectedCar={setSelectedCar}
           />

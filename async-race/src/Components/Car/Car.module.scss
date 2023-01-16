@@ -1,4 +1,13 @@
 .car {
+  &__inner {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  &__track {
+    border-bottom: 1px dotted black;
+  }
+
   &__icon {
     width: 100px;
     height: 70px;

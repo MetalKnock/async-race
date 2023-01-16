@@ -10,3 +10,12 @@ export interface ICar extends ICarCreate {
 }
 
 export type ICars = ICar[];
+
+export interface IEngine {
+  velocity: number;
+  distance: number;
+}
+export interface IGetCars {
+  result: ICars | null;
+  quantity: number;
+}
