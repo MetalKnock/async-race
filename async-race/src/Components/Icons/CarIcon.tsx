@@ -3,9 +3,10 @@ import React from 'react';
 interface CarIconProps {
   className: string;
   color: string;
+  positionX: number;
 }
 
-function CarIcon({ className, color }: CarIconProps) {
+function CarIcon({ className, color, positionX }: CarIconProps) {
   return (
     <svg
       className={className}
@@ -14,7 +15,8 @@ function CarIcon({ className, color }: CarIconProps) {
       height="800"
       fill="#000"
       stroke="#000"
-      transform="scale(-1 1)"
+      transform={`scale(-1 1)
+      translate(-${positionX},0)`}
       version="1.1"
       viewBox="0 0 512 512"
     >

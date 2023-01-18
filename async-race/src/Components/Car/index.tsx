@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { PATH, BASE, INIT_SELECTED_CAR } from '../../const/const';
-import { ICar, ICars, IEngine, IGetCars } from '../../types/data';
+import React, { useState, useRef, useEffect } from 'react';
+import { controlCarEngine, deleteCar, driveMode, getCars } from '../../api/raceAPI';
+import { INIT_SELECTED_CAR } from '../../const/const';
+import { ICar, ICars } from '../../types/data';
+import { IGetCars } from '../../types/raceAPI';
 import Button from '../Button';
-import CarIcon from '../SVG/CarIcon';
+import CarIcon from '../Icons/CarIcon';
+import FinishIcon from '../Icons/FinishIcon';
 import styles from './Car.module.scss';
 
 interface CarProps {
@@ -11,7 +14,6 @@ interface CarProps {
   page: number;
   setCarsQuantity: (value: React.SetStateAction<number>) => void;
   setCars: (value: React.SetStateAction<ICars>) => void;
-  getCarsOnCurrentPage: (page: number) => Promise<IGetCars>;
   setSelectedCar: React.Dispatch<React.SetStateAction<ICar>>;
 }
 
@@ -21,55 +23,24 @@ export default function Car({
   page,
   setCarsQuantity,
   setCars,
-  getCarsOnCurrentPage,
   setSelectedCar,
 }: CarProps) {
   const [velocity, setVelocity] = useState(0);
   const [distance, setDistance] = useState(0);
+  const [widthRoad, setWidthRoad] = useState(0);
+  const [positionX, setPositionX] = useState(0);
 
-  const deleteCar = async () => {
-    await fetch(`${BASE}${PATH.garage}/${data.id}`, {
-      method: 'DELETE',
-    });
-  };
-
-  const startCar = async () => {
-    const response = await fetch(`${BASE}${PATH.engine}?id=${data.id}&status=started`, {
-      method: 'PATCH',
-    });
-    const result: IEngine = await response.json();
-    setVelocity(result.velocity);
-    setDistance(result.distance);
-  };
-
-  const stopCar = async () => {
-    const response = await fetch(`${BASE}${PATH.engine}?id=${data.id}&status=stopped`, {
-      method: 'PATCH',
-    });
-
-    const result: IEngine = await response.json();
-    setVelocity(result.velocity);
-    setDistance(result.distance);
-  };
-
-  const switchDriveMode = async () => {
-    const response = await fetch(`${BASE}${PATH.engine}?id=${data.id}&status=drive`, {
-      method: 'PATCH',
-    });
-
-    const result: IEngine = await response.json();
-    console.log(result);
-  };
+  const refRoad = useRef<HTMLDivElement | null>(null);
 
   const handleClickRemove = async () => {
-    await deleteCar();
+    await deleteCar({ id: data.id });
     if (selectedCar.id === data.id) {
       setSelectedCar(INIT_SELECTED_CAR);
     }
-    const result: IGetCars = await getCarsOnCurrentPage(page);
+    const result: IGetCars = await getCars({ page });
     setCarsQuantity(result.quantity);
-    if (result.result) {
-      setCars(result.result);
+    if (result.cars) {
+      setCars(result.cars);
     }
   };
 
@@ -78,13 +49,29 @@ export default function Car({
   };
 
   const handleClickStart = async () => {
-    await startCar();
-    await switchDriveMode();
+    const result = await controlCarEngine({ id: data.id, status: 'started' });
+    setVelocity(result.velocity);
+    setDistance(result.distance);
+    console.log(velocity, distance);
+    const a = await driveMode({ id: data.id });
+    console.log(a);
   };
 
   const handleClickStop = async () => {
-    await stopCar();
+    const result = await controlCarEngine({ id: data.id, status: 'stopped' });
+    setVelocity(result.velocity);
+    setDistance(result.distance);
   };
+
+  useEffect(() => {
+    if (refRoad.current && velocity) {
+      setWidthRoad(refRoad.current.offsetWidth);
+    }
+  }, [velocity]);
+
+  useEffect(() => {
+    if (widthRoad) setPositionX(22);
+  }, [widthRoad]);
 
   return (
     <div className={styles.car}>
@@ -117,7 +104,10 @@ export default function Car({
           disabled={false}
           handleClick={handleClickStop}
         />
-        <CarIcon className={styles.car__icon} color={data.color} />
+        <div className={styles.car__road} ref={refRoad}>
+          <CarIcon className={styles.car__carIcon} color={data.color} positionX={positionX} />
+          <FinishIcon className={styles.car__finishIcon} />
+        </div>
       </div>
     </div>
   );

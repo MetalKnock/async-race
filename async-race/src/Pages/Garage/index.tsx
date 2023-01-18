@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { createCar, getCarsOnCurrentPage, updateCar } from '../../api/Car';
+import React, { useState, useEffect, useCallback } from 'react';
+import { getCars } from '../../api/raceAPI';
 import Button from '../../Components/Button';
 import Car from '../../Components/Car';
-import { CARS_PER_PAGE, DEFAULT_COLOR_INPUT, INIT_SELECTED_CAR } from '../../const/const';
-import { ICar, ICarCreate, ICars, IGetCars } from '../../types/data';
-import { getRandomNData } from '../../utils/common';
+import Inputs from '../../Components/Inputs';
+import { CARS_PER_PAGE, INIT_SELECTED_CAR } from '../../const/const';
+import { ICar, ICars } from '../../types/data';
+
 import styles from './Garage.module.scss';
 
 export default function Garage() {
@@ -12,13 +13,6 @@ export default function Garage() {
   const [cars, setCars] = useState<ICars>([]);
   const [carsQuantity, setCarsQuantity] = useState(0);
   const [selectedCar, setSelectedCar] = useState<ICar>(INIT_SELECTED_CAR);
-  const [inputNameUpdate, setInputNameUpdate] = useState('');
-  const [inputColorUpdate, setInputColorUpdate] = useState(DEFAULT_COLOR_INPUT);
-
-  const name = useRef<HTMLInputElement | null>(null);
-  const color = useRef<HTMLInputElement | null>(null);
-  const nameUpdate = useRef<HTMLInputElement | null>(null);
-  const colorUpdate = useRef<HTMLInputElement | null>(null);
 
   const numberOfPages = Math.ceil(carsQuantity / CARS_PER_PAGE);
 
@@ -34,59 +28,6 @@ export default function Garage() {
     }
   };
 
-  const handleClickRandomButton = async () => {
-    await Promise.all(getRandomNData(100).map((data) => createCar(data)));
-    const result: IGetCars = await getCarsOnCurrentPage(page);
-    setCarsQuantity(result.quantity);
-    if (result.result) {
-      setCars(result.result);
-    }
-  };
-
-  const handleSubmitCreate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (name.current && color.current) {
-      const data: ICarCreate = {
-        name: name.current.value,
-        color: color.current.value,
-      };
-      await createCar(data);
-      const result: IGetCars = await getCarsOnCurrentPage(page);
-      setCarsQuantity(result.quantity);
-      if (result.result) {
-        setCars(result.result);
-      }
-    }
-  };
-
-  const handleSubmitUpdate = async (e: React.FocusEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (nameUpdate.current && colorUpdate.current) {
-      const data: ICarCreate = {
-        name: nameUpdate.current.value,
-        color: colorUpdate.current.value,
-      };
-      await updateCar(data, selectedCar.id);
-      const result: IGetCars = await getCarsOnCurrentPage(page);
-      setCarsQuantity(result.quantity);
-      if (result.result) {
-        setCars(result.result);
-      }
-      setSelectedCar(INIT_SELECTED_CAR);
-    }
-  };
-
-  const handleChangeNameUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target) {
-      setInputNameUpdate(e.target.value);
-    }
-  };
-  const handleChangeColorUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target) {
-      setInputColorUpdate(e.target.value);
-    }
-  };
-
   useEffect(() => {
     if (cars.length === 0 && carsQuantity > 0) {
       setPage(page - 1);
@@ -94,10 +35,10 @@ export default function Garage() {
   }, [cars]);
 
   const fetchApi = useCallback(async () => {
-    const result = await getCarsOnCurrentPage(page);
+    const result = await getCars({ page });
     setCarsQuantity(result.quantity);
-    if (result.result) {
-      setCars(result.result);
+    if (result.cars) {
+      setCars(result.cars);
     }
   }, [page]);
 
@@ -105,53 +46,16 @@ export default function Garage() {
     fetchApi();
   }, [fetchApi]);
 
-  useEffect(() => {
-    if (carsQuantity > 0) {
-      setInputNameUpdate(selectedCar.name);
-      setInputColorUpdate(selectedCar.color);
-    }
-  }, [selectedCar]);
-
   return (
     <div className={styles.garage}>
-      <div className={styles.garage__inputs}>
-        <form className={styles.garage__inputsCreate} onSubmit={handleSubmitCreate}>
-          <input type="text" ref={name} />
-          <input type="color" ref={color} />
-          <button type="submit">create</button>
-        </form>
-        <form className={styles.garage__inputsUpdate} onSubmit={handleSubmitUpdate}>
-          <input
-            type="text"
-            ref={nameUpdate}
-            value={inputNameUpdate}
-            // selectedCar.name
-            onChange={handleChangeNameUpdate}
-          />
-
-          <input
-            type="color"
-            ref={colorUpdate}
-            value={inputColorUpdate}
-            // selectedCar.colors
-            onChange={handleChangeColorUpdate}
-          />
-
-          <button type="submit" disabled={selectedCar === INIT_SELECTED_CAR}>
-            update
-          </button>
-        </form>
-        <div className={styles.garage__inputsButtons}>
-          <button type="button">start</button>
-          <button type="button">reset</button>
-          <Button
-            className={styles.garage__random}
-            title="random"
-            disabled={false}
-            handleClick={handleClickRandomButton}
-          />
-        </div>
-      </div>
+      <Inputs
+        page={page}
+        selectedCar={selectedCar}
+        carsQuantity={carsQuantity}
+        setCarsQuantity={setCarsQuantity}
+        setCars={setCars}
+        setSelectedCar={setSelectedCar}
+      />
       <h1 className={styles.garage__title}>Garage ({carsQuantity})</h1>
       <div className={styles.garage__page}>page #{page}</div>
       <Button
@@ -175,7 +79,6 @@ export default function Garage() {
             selectedCar={selectedCar}
             setCarsQuantity={setCarsQuantity}
             setCars={setCars}
-            getCarsOnCurrentPage={getCarsOnCurrentPage}
             setSelectedCar={setSelectedCar}
           />
         ))}

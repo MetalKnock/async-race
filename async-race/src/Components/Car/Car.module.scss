@@ -4,11 +4,24 @@
     gap: 10px;
     align-items: center;
   }
+
   &__track {
     border-bottom: 1px dotted black;
   }
 
-  &__icon {
+  &__road {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  &__carIcon {
+    width: 100px;
+    height: 70px;
+  }
+
+  &__finishIcon {
     width: 100px;
     height: 70px;
   }

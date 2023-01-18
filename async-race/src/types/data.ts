@@ -15,7 +15,3 @@ export interface IEngine {
   velocity: number;
   distance: number;
 }
-export interface IGetCars {
-  result: ICars | null;
-  quantity: number;
-}
