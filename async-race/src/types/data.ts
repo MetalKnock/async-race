@@ -15,3 +15,9 @@ export interface IEngine {
   velocity: number;
   distance: number;
 }
+export interface IRaceEngine {
+  id: number;
+  engine: IEngine;
+}
+
+export type IRaceEngines = IRaceEngine[];

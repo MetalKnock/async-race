@@ -16,3 +16,5 @@ export const getRandomData = (): ICarCreate => ({
 
 export const getRandomNData = (n: number): ICarsCreate =>
   [...Array<ICarCreate>(n)].map(() => getRandomData());
+
+export const easeInOutSine = (x: number): number => -(Math.cos(Math.PI * x) - 1) / 2;

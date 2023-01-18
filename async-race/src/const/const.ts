@@ -17,3 +17,5 @@ export const INIT_SELECTED_CAR: ICar = {
   color: DEFAULT_COLOR_INPUT,
   id: 0,
 };
+
+export const WIDTH_CAR_ICON = 100;

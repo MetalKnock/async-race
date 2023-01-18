@@ -1,4 +1,5 @@
 import React from 'react';
+import { WIDTH_CAR_ICON } from '../../const/const';
 
 interface CarIconProps {
   className: string;
@@ -11,7 +12,7 @@ function CarIcon({ className, color, positionX }: CarIconProps) {
     <svg
       className={className}
       xmlns="http://www.w3.org/2000/svg"
-      width="800"
+      width={`${WIDTH_CAR_ICON}px`}
       height="800"
       fill="#000"
       stroke="#000"

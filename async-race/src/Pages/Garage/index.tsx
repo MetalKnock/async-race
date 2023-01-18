@@ -4,7 +4,7 @@ import Car from '../../Components/Car';
 import Inputs from '../../Components/Inputs';
 import Pagination from '../../Components/Pagination';
 import { INIT_SELECTED_CAR } from '../../const/const';
-import { ICar, ICars } from '../../types/data';
+import { ICar, ICars, IRaceEngines } from '../../types/data';
 
 import styles from './Garage.module.scss';
 
@@ -13,6 +13,7 @@ export default function Garage() {
   const [cars, setCars] = useState<ICars>([]);
   const [carsQuantity, setCarsQuantity] = useState(0);
   const [selectedCar, setSelectedCar] = useState<ICar>(INIT_SELECTED_CAR);
+  const [raceEngines, setRaceEngines] = useState<IRaceEngines>([]);
 
   useEffect(() => {
     if (cars.length === 0 && carsQuantity > 0) {
@@ -38,19 +39,28 @@ export default function Garage() {
         page={page}
         selectedCar={selectedCar}
         carsQuantity={carsQuantity}
+        raceEngines={raceEngines}
         setCarsQuantity={setCarsQuantity}
         setCars={setCars}
         setSelectedCar={setSelectedCar}
+        setRaceEngines={setRaceEngines}
       />
       <h1 className={styles.garage__title}>Garage ({carsQuantity})</h1>
-      <Pagination carsQuantity={carsQuantity} page={page} setPage={setPage} />
+      <Pagination
+        carsQuantity={carsQuantity}
+        page={page}
+        setPage={setPage}
+        setRaceEngines={setRaceEngines}
+      />
       <div>
         {cars.map((car) => (
           <Car
             key={car.id}
+            carsLength={cars.length}
             data={car}
             page={page}
             selectedCar={selectedCar}
+            raceEngines={raceEngines}
             setCarsQuantity={setCarsQuantity}
             setCars={setCars}
             setSelectedCar={setSelectedCar}

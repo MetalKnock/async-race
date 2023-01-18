@@ -13,16 +13,22 @@
     flex-grow: 1;
     display: flex;
     justify-content: space-between;
-    overflow: hidden;
+    position: relative;
+    height: 50px;
+    bottom: 0;
   }
 
   &__carIcon {
-    width: 100px;
+    position: absolute;
+    left: 0;
     height: 70px;
   }
 
   &__finishIcon {
-    width: 100px;
-    height: 70px;
+    position: absolute;
+    width: 50px;
+    height: 40px;
+    right: 70px;
+    bottom: 0;
   }
 }
