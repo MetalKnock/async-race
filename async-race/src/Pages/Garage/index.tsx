@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getCars } from '../../api/raceAPI';
-import Button from '../../Components/Button';
 import Car from '../../Components/Car';
 import Inputs from '../../Components/Inputs';
-import { CARS_PER_PAGE, INIT_SELECTED_CAR } from '../../const/const';
+import Pagination from '../../Components/Pagination';
+import { INIT_SELECTED_CAR } from '../../const/const';
 import { ICar, ICars } from '../../types/data';
 
 import styles from './Garage.module.scss';
@@ -13,20 +13,6 @@ export default function Garage() {
   const [cars, setCars] = useState<ICars>([]);
   const [carsQuantity, setCarsQuantity] = useState(0);
   const [selectedCar, setSelectedCar] = useState<ICar>(INIT_SELECTED_CAR);
-
-  const numberOfPages = Math.ceil(carsQuantity / CARS_PER_PAGE);
-
-  const handleClickPrev = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
-
-  const handleClickNext = () => {
-    if (page < numberOfPages) {
-      setPage(page + 1);
-    }
-  };
 
   useEffect(() => {
     if (cars.length === 0 && carsQuantity > 0) {
@@ -57,19 +43,7 @@ export default function Garage() {
         setSelectedCar={setSelectedCar}
       />
       <h1 className={styles.garage__title}>Garage ({carsQuantity})</h1>
-      <div className={styles.garage__page}>page #{page}</div>
-      <Button
-        className={styles.garage__buttonPrev}
-        title="prev"
-        disabled={page === 1}
-        handleClick={handleClickPrev}
-      />
-      <Button
-        className={styles.garage__buttonNext}
-        title="next"
-        disabled={page === numberOfPages}
-        handleClick={handleClickNext}
-      />
+      <Pagination carsQuantity={carsQuantity} page={page} setPage={setPage} />
       <div>
         {cars.map((car) => (
           <Car
