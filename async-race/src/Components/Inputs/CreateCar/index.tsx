@@ -1,20 +1,38 @@
 import React, { useRef } from 'react';
 import { createCar, getCars } from '../../../api/raceAPI';
-import { ICarCreate, ICars } from '../../../types/data';
+import useGarageContext from '../../../hooks/useGarageContext';
+import { ICarCreate } from '../../../types/data';
 import { IGetCars } from '../../../types/raceAPI';
+import { DEFAULT_COLOR_INPUT } from '../../../const/const';
 import styles from './CreateCar.module.scss';
 
-interface CreateCarProps {
-  page: number;
-  setCarsQuantity: React.Dispatch<React.SetStateAction<number>>;
-  setCars: React.Dispatch<React.SetStateAction<ICars>>;
-}
+export default function CreateCar() {
+  const {
+    pageGarage,
+    inputCreateCarName,
+    inputCreateCarColor,
+    setCars,
+    setCarsQuantity,
+    setInputCreateCarName,
+    setInputCreateCarColor,
+  } = useGarageContext();
 
-export default function CreateCar({ page, setCarsQuantity, setCars }: CreateCarProps) {
   const name = useRef<HTMLInputElement | null>(null);
   const color = useRef<HTMLInputElement | null>(null);
 
-  const handleSubmitCreate = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (e.target) {
+      setInputCreateCarName(e.target.value);
+    }
+  };
+
+  const handleChangeColor = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (e.target) {
+      setInputCreateCarColor(e.target.value);
+    }
+  };
+
+  const handleSubmitCreate = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (name.current && color.current) {
       const data: ICarCreate = {
@@ -22,18 +40,20 @@ export default function CreateCar({ page, setCarsQuantity, setCars }: CreateCarP
         color: color.current.value,
       };
       await createCar({ data });
-      const result: IGetCars = await getCars({ page });
+      const result: IGetCars = await getCars({ pageGarage });
       setCarsQuantity(result.quantity);
       if (result.cars) {
         setCars(result.cars);
       }
+      setInputCreateCarName('');
+      setInputCreateCarColor(DEFAULT_COLOR_INPUT);
     }
   };
 
   return (
     <form className={styles.createCar} onSubmit={handleSubmitCreate}>
-      <input type="text" ref={name} />
-      <input type="color" ref={color} />
+      <input type="text" ref={name} value={inputCreateCarName} onChange={handleChangeName} />
+      <input type="color" ref={color} value={inputCreateCarColor} onChange={handleChangeColor} />
       <button type="submit">CREATE</button>
     </form>
   );

@@ -21,3 +21,16 @@ export interface IRaceEngine {
 }
 
 export type IRaceEngines = IRaceEngine[];
+
+export interface IWinner {
+  id: number;
+  wins: number;
+  time: number;
+}
+
+export type IWinners = IWinner[];
+
+export interface IWinnerUpdate {
+  wins: number;
+  time: number;
+}

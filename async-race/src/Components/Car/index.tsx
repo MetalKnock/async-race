@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { controlCarEngine, driveMode } from '../../api/raceAPI';
+import { controlCarEngine, createWinner, driveMode } from '../../api/raceAPI';
 import { WIDTH_CAR_ICON } from '../../const/const';
-import { ICar, ICars, IRaceEngine, IRaceEngines } from '../../types/data';
+import useGarageContext from '../../hooks/useGarageContext';
+import { ICar, IRaceEngine, IWinner } from '../../types/data';
 import { easeInOutSine } from '../../utils/common';
-import Button from '../Button';
 import CarIcon from '../Icons/CarIcon';
 import FinishIcon from '../Icons/FinishIcon';
 import styles from './Car.module.scss';
@@ -12,24 +12,11 @@ import CarControls from './CarControls';
 interface CarProps {
   carsLength: number;
   data: ICar;
-  selectedCar: ICar;
-  page: number;
-  raceEngines: IRaceEngines;
-  setCarsQuantity: (value: React.SetStateAction<number>) => void;
-  setCars: (value: React.SetStateAction<ICars>) => void;
-  setSelectedCar: React.Dispatch<React.SetStateAction<ICar>>;
 }
 
-export default function Car({
-  carsLength,
-  data,
-  selectedCar,
-  page,
-  raceEngines,
-  setCarsQuantity,
-  setCars,
-  setSelectedCar,
-}: CarProps) {
+export default function Car({ carsLength, data }: CarProps) {
+  const { raceEngines } = useGarageContext();
+
   const [positionX, setPositionX] = useState(0);
   const [isAnimated, setIsAnimated] = useState(false);
 
@@ -68,8 +55,10 @@ export default function Car({
     });
     if (!(await driveMode({ id: data.id })).success) {
       cancelAnimationFrame(requestId.current);
+    } else if (raceEngines.length === carsLength) {
+      const winner: IWinner = { id: data.id, time: duration, wins: 1 };
+      await createWinner({ data: winner });
     }
-    setIsAnimated(false);
   };
 
   const handleClickStart = async () => {
@@ -89,6 +78,7 @@ export default function Car({
     if (raceEngines.length === carsLength) {
       const raceEngine = raceEngines.find((val) => val.id === data.id);
       if (raceEngine) {
+        setIsAnimated(true);
         startRace(raceEngine);
       }
     } else if (raceEngines.length > 0) {
@@ -103,29 +93,26 @@ export default function Car({
   return (
     <div className={styles.car}>
       <div className={styles.car__header}>
-        <CarControls
-          data={data}
-          page={page}
-          selectedCar={selectedCar}
-          setCarsQuantity={setCarsQuantity}
-          setCars={setCars}
-          setSelectedCar={setSelectedCar}
-        />
+        <CarControls data={data} />
         <div className={styles.car__name}>{data.name}</div>
       </div>
       <div className={`${styles.car__track} ${styles.car__inner}`}>
-        <Button
-          className={styles.car__start}
-          title="A"
+        <button
+          type="button"
+          className={styles.carControls__select}
           disabled={isAnimated}
-          handleClick={handleClickStart}
-        />
-        <Button
-          className={styles.car__stop}
-          title="B"
+          onClick={handleClickStart}
+        >
+          A
+        </button>
+        <button
+          type="button"
+          className={styles.carControls__select}
           disabled={!isAnimated}
-          handleClick={handleClickStop}
-        />
+          onClick={handleClickStop}
+        >
+          B
+        </button>
         <div className={styles.car__road} ref={refRoad}>
           <CarIcon className={styles.car__carIcon} color={data.color} positionX={positionX} />
           <FinishIcon className={styles.car__finishIcon} />

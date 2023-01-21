@@ -5,14 +5,19 @@ import {
   getCarsProps,
   updateCarProps,
   driveModeProps,
+  createWinnerProps,
+  deleteWinnerProps,
   IGetCars,
   IDriveMode,
+  getWinnersProps,
+  IGetWinners,
+  updateWinnerProps,
 } from '../types/raceAPI';
-import { ICars, IEngine } from '../types/data';
-import { PATH, CARS_PER_PAGE, BASE } from '../const/const';
+import { ICars, IEngine, IWinners } from '../types/data';
+import { PATH, CARS_PER_PAGE, BASE, WINNERS_PER_PAGE } from '../const/const';
 
-export const getCars = async ({ page }: getCarsProps): Promise<IGetCars> => {
-  const response = await fetch(`${BASE}${PATH.garage}?_limit=${CARS_PER_PAGE}&_page=${page}`);
+export const getCars = async ({ pageGarage }: getCarsProps): Promise<IGetCars> => {
+  const response = await fetch(`${BASE}${PATH.garage}?_limit=${CARS_PER_PAGE}&_page=${pageGarage}`);
   const quantity = Number(response.headers.get('x-total-count'));
   const cars: ICars | null = await response.json();
 
@@ -59,4 +64,38 @@ export const driveMode = async ({ id }: driveModeProps): Promise<IDriveMode> => 
   }).catch((e) => e);
 
   return response.ok ? { success: true } : { success: false };
+};
+
+export const getWinners = async ({ page }: getWinnersProps): Promise<IGetWinners> => {
+  const response = await fetch(`${BASE}${PATH.winners}?_limit=${WINNERS_PER_PAGE}&_page=${page}`);
+  const quantity = Number(response.headers.get('x-total-count'));
+  const winners: IWinners | null = await response.json();
+
+  return { winners, quantity };
+};
+
+export const createWinner = async ({ data }: createWinnerProps): Promise<void> => {
+  await fetch(`${BASE}${PATH.winners}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+};
+
+export const deleteWinner = async ({ id }: deleteWinnerProps): Promise<void> => {
+  await fetch(`${BASE}${PATH.winners}/${id}`, {
+    method: 'DELETE',
+  });
+};
+
+export const updateWinner = async ({ data, id }: updateWinnerProps) => {
+  await fetch(`${BASE}${PATH.garage}/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
 };

@@ -1,28 +1,16 @@
 import React from 'react';
 import { controlCarEngine, createCar, getCars } from '../../../api/raceAPI';
-import { ICars, IRaceEngines } from '../../../types/data';
+import { INIT_RACE_ENGINE } from '../../../const/const';
+import useGarageContext from '../../../hooks/useGarageContext';
 import { getRandomNData } from '../../../utils/common';
-import Button from '../../Button';
 import styles from './RaceButtons.module.scss';
 
-interface RaceButtonsProps {
-  page: number;
-  raceEngines: IRaceEngines;
-  setCarsQuantity: React.Dispatch<React.SetStateAction<number>>;
-  setCars: React.Dispatch<React.SetStateAction<ICars>>;
-  setRaceEngines: React.Dispatch<React.SetStateAction<IRaceEngines>>;
-}
+export default function RaceButtons() {
+  const { pageGarage, raceEngines, setCarsQuantity, setCars, setRaceEngines } = useGarageContext();
 
-export default function RaceButtons({
-  page,
-  raceEngines,
-  setCarsQuantity,
-  setCars,
-  setRaceEngines,
-}: RaceButtonsProps) {
   const handleClickRandomButton = async () => {
     await Promise.all(getRandomNData(100).map((data) => createCar({ data })));
-    const result = await getCars({ page });
+    const result = await getCars({ pageGarage });
     setCarsQuantity(result.quantity);
     if (result.cars) {
       setCars(result.cars);
@@ -30,7 +18,7 @@ export default function RaceButtons({
   };
 
   const handleClickStartRace = async () => {
-    const result = await getCars({ page });
+    const result = await getCars({ pageGarage });
     if (result.cars) {
       setRaceEngines(
         await Promise.all(
@@ -44,7 +32,7 @@ export default function RaceButtons({
   };
 
   const handleClickReset = async () => {
-    const result = await getCars({ page });
+    const result = await getCars({ pageGarage });
 
     if (result.cars) {
       let copyRaceEngines = [...raceEngines];
@@ -54,7 +42,7 @@ export default function RaceButtons({
           copyRaceEngines = copyRaceEngines.filter((raceEngine) => raceEngine.id !== car.id);
           setRaceEngines(copyRaceEngines);
         } else {
-          setRaceEngines([{ id: 0, engine: { velocity: 0, distance: 0 } }]);
+          setRaceEngines([INIT_RACE_ENGINE]);
         }
       });
     }
@@ -68,12 +56,14 @@ export default function RaceButtons({
       <button type="button" onClick={handleClickReset}>
         RESET
       </button>
-      <Button
+      <button
         className={styles.raceButtons__random}
-        title="RANDOM"
+        type="button"
         disabled={false}
-        handleClick={handleClickRandomButton}
-      />
+        onClick={handleClickRandomButton}
+      >
+        RANDOM
+      </button>
     </div>
   );
 }

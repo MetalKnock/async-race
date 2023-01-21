@@ -1,53 +1,46 @@
 import React from 'react';
 import { CARS_PER_PAGE } from '../../const/const';
-import { IRaceEngines } from '../../types/data';
-import Button from '../Button';
+import useGarageContext from '../../hooks/useGarageContext';
 import styles from './Pagination.module.scss';
 
-interface PagintaionProps {
-  carsQuantity: number;
-  page: number;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
-  setRaceEngines: React.Dispatch<React.SetStateAction<IRaceEngines>>;
-}
+export default function Pagination() {
+  const { carsQuantity, pageGarage, setPageGarage, setRaceEngines } = useGarageContext();
 
-export default function Pagination({
-  carsQuantity,
-  page,
-  setPage,
-  setRaceEngines,
-}: PagintaionProps) {
   const numberOfPages = Math.ceil(carsQuantity / CARS_PER_PAGE);
 
   const handleClickPrev = () => {
-    if (page > 1) {
-      setPage(page - 1);
+    if (pageGarage > 1) {
+      setPageGarage(pageGarage - 1);
       setRaceEngines([]);
     }
   };
 
   const handleClickNext = () => {
-    if (page < numberOfPages) {
-      setPage(page + 1);
+    if (pageGarage < numberOfPages) {
+      setPageGarage(pageGarage + 1);
       setRaceEngines([]);
     }
   };
 
   return (
     <div className={styles.pagination}>
-      <div className={styles.pagination__page}>page #{page}</div>
-      <Button
+      <div className={styles.pagination__page}>page #{pageGarage}</div>
+      <button
         className={styles.pagination__buttonPrev}
-        title="PREV"
-        disabled={page === 1}
-        handleClick={handleClickPrev}
-      />
-      <Button
+        type="button"
+        disabled={pageGarage === 1}
+        onClick={handleClickPrev}
+      >
+        PREV
+      </button>
+      <button
         className={styles.pagination__buttonNext}
-        title="NEXT"
-        disabled={page === numberOfPages}
-        handleClick={handleClickNext}
-      />{' '}
+        type="button"
+        disabled={pageGarage === numberOfPages}
+        onClick={handleClickNext}
+      >
+        NEXT
+      </button>
     </div>
   );
 }
