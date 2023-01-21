@@ -29,6 +29,7 @@
         "tsx": "never"
       }
     ],
+    "no-console": ["error", { "allow": ["warn", "error"] }],
     "linebreak-style": 0,
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", "ts", "tsx"] }],

@@ -6,46 +6,63 @@ import { getRandomNData } from '../../../utils/common';
 import styles from './RaceButtons.module.scss';
 
 export default function RaceButtons() {
-  const { pageGarage, raceEngines, setCarsQuantity, setCars, setRaceEngines } = useGarageContext();
+  const { pageGarage, raceEngines, setCarsQuantity, setCars, setRaceEngines, setHaveWinner } =
+    useGarageContext();
 
   const handleClickRandomButton = async () => {
     await Promise.all(getRandomNData(100).map((data) => createCar({ data })));
-    const result = await getCars({ pageGarage });
-    setCarsQuantity(result.quantity);
-    if (result.cars) {
-      setCars(result.cars);
+    const carsData = await getCars({ pageGarage });
+    if (!carsData) {
+      throw Error('getCars is null');
+    }
+    setCarsQuantity(carsData.quantity);
+    if (carsData.cars) {
+      setCars(carsData.cars);
     }
   };
 
   const handleClickStartRace = async () => {
     const result = await getCars({ pageGarage });
+    if (!result) {
+      throw Error('getCars is null');
+    }
     if (result.cars) {
       setRaceEngines(
         await Promise.all(
-          result.cars.map(async (car) => ({
-            id: car.id,
-            engine: await controlCarEngine({ id: car.id, status: 'started' }),
-          })),
+          result.cars.map(async (car) => {
+            const carEngineData = await controlCarEngine({ id: car.id, status: 'started' });
+            if (!carEngineData) {
+              throw Error('controlCarEngine is null');
+            }
+            return {
+              id: car.id,
+              engine: carEngineData,
+            };
+          }),
         ),
       );
     }
   };
 
   const handleClickReset = async () => {
-    const result = await getCars({ pageGarage });
-
-    if (result.cars) {
-      let copyRaceEngines = [...raceEngines];
-      result.cars.map(async (car) => {
-        await controlCarEngine({ id: car.id, status: 'stopped' });
-        if (copyRaceEngines.length > 1) {
-          copyRaceEngines = copyRaceEngines.filter((raceEngine) => raceEngine.id !== car.id);
-          setRaceEngines(copyRaceEngines);
-        } else {
-          setRaceEngines([INIT_RACE_ENGINE]);
-        }
-      });
+    const carsData = await getCars({ pageGarage });
+    if (!carsData) {
+      throw Error('getCars is null');
     }
+    if (!carsData.cars) {
+      throw Error('cars is null');
+    }
+    setHaveWinner(false);
+    let copyRaceEngines = [...raceEngines];
+    carsData.cars.map(async (car) => {
+      await controlCarEngine({ id: car.id, status: 'stopped' });
+      if (copyRaceEngines.length > 1) {
+        copyRaceEngines = copyRaceEngines.filter((raceEngine) => raceEngine.id !== car.id);
+        setRaceEngines(copyRaceEngines);
+      } else {
+        setRaceEngines([INIT_RACE_ENGINE]);
+      }
+    });
   };
 
   return (

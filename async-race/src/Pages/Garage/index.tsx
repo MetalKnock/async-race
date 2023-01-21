@@ -3,6 +3,7 @@ import { getCars } from '../../api/raceAPI';
 import Car from '../../Components/Car';
 import Inputs from '../../Components/Inputs';
 import Pagination from '../../Components/Pagination';
+import { CARS_PER_PAGE, TYPE_PAGINATION } from '../../const/const';
 import useGarageContext from '../../hooks/useGarageContext';
 
 import styles from './Garage.module.scss';
@@ -18,10 +19,13 @@ export default function Garage() {
   }, [cars]);
 
   const fetchApi = useCallback(async () => {
-    const result = await getCars({ pageGarage });
-    setCarsQuantity(result.quantity);
-    if (result.cars) {
-      setCars(result.cars);
+    const carsData = await getCars({ pageGarage });
+    if (!carsData) {
+      throw Error('getCars is null');
+    }
+    setCarsQuantity(carsData.quantity);
+    if (carsData.cars) {
+      setCars(carsData.cars);
     }
   }, [pageGarage]);
 
@@ -33,7 +37,12 @@ export default function Garage() {
     <div className={styles.garage}>
       <Inputs />
       <h1 className={styles.garage__title}>Garage ({carsQuantity})</h1>
-      <Pagination />
+      <Pagination
+        numberOfPages={Math.ceil(carsQuantity / CARS_PER_PAGE)}
+        page={pageGarage}
+        setPage={setPageGarage}
+        type={TYPE_PAGINATION.garage}
+      />
       <div>
         {cars.map((car) => (
           <Car key={car.id} carsLength={cars.length} data={car} />

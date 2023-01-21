@@ -1,34 +1,43 @@
 import React from 'react';
-import { CARS_PER_PAGE } from '../../const/const';
+import { TYPE_PAGINATION } from '../../const/const';
 import useGarageContext from '../../hooks/useGarageContext';
 import styles from './Pagination.module.scss';
 
-export default function Pagination() {
-  const { carsQuantity, pageGarage, setPageGarage, setRaceEngines } = useGarageContext();
+interface PaginationProps {
+  numberOfPages: number;
+  page: number;
+  type: TYPE_PAGINATION;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+}
 
-  const numberOfPages = Math.ceil(carsQuantity / CARS_PER_PAGE);
+export default function Pagination({ numberOfPages, page, type, setPage }: PaginationProps) {
+  const { setRaceEngines } = useGarageContext();
 
   const handleClickPrev = () => {
-    if (pageGarage > 1) {
-      setPageGarage(pageGarage - 1);
-      setRaceEngines([]);
+    if (page > 1) {
+      setPage(page - 1);
+      if (type === TYPE_PAGINATION.garage) {
+        setRaceEngines([]);
+      }
     }
   };
 
   const handleClickNext = () => {
-    if (pageGarage < numberOfPages) {
-      setPageGarage(pageGarage + 1);
-      setRaceEngines([]);
+    if (page < numberOfPages) {
+      setPage(page + 1);
+      if (type === TYPE_PAGINATION.garage) {
+        setRaceEngines([]);
+      }
     }
   };
 
   return (
     <div className={styles.pagination}>
-      <div className={styles.pagination__page}>page #{pageGarage}</div>
+      <div className={styles.pagination__page}>page #{page}</div>
       <button
         className={styles.pagination__buttonPrev}
         type="button"
-        disabled={pageGarage === 1}
+        disabled={page === 1}
         onClick={handleClickPrev}
       >
         PREV
@@ -36,7 +45,7 @@ export default function Pagination() {
       <button
         className={styles.pagination__buttonNext}
         type="button"
-        disabled={pageGarage === numberOfPages}
+        disabled={page === numberOfPages || numberOfPages === 0}
         onClick={handleClickNext}
       >
         NEXT

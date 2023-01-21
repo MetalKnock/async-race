@@ -2,8 +2,7 @@ import React, { useRef } from 'react';
 import { createCar, getCars } from '../../../api/raceAPI';
 import useGarageContext from '../../../hooks/useGarageContext';
 import { ICarCreate } from '../../../types/data';
-import { IGetCars } from '../../../types/raceAPI';
-import { DEFAULT_COLOR_INPUT } from '../../../const/const';
+import { DEFAULT_COLOR } from '../../../const/const';
 import styles from './CreateCar.module.scss';
 
 export default function CreateCar() {
@@ -40,13 +39,16 @@ export default function CreateCar() {
         color: color.current.value,
       };
       await createCar({ data });
-      const result: IGetCars = await getCars({ pageGarage });
-      setCarsQuantity(result.quantity);
-      if (result.cars) {
-        setCars(result.cars);
+      const carsData = await getCars({ pageGarage });
+      if (!carsData) {
+        throw Error('getCars is null');
+      }
+      setCarsQuantity(carsData.quantity);
+      if (carsData.cars) {
+        setCars(carsData.cars);
       }
       setInputCreateCarName('');
-      setInputCreateCarColor(DEFAULT_COLOR_INPUT);
+      setInputCreateCarColor(DEFAULT_COLOR);
     }
   };
 
@@ -54,7 +56,9 @@ export default function CreateCar() {
     <form className={styles.createCar} onSubmit={handleSubmitCreate}>
       <input type="text" ref={name} value={inputCreateCarName} onChange={handleChangeName} />
       <input type="color" ref={color} value={inputCreateCarColor} onChange={handleChangeColor} />
-      <button type="submit">CREATE</button>
+      <button type="submit" disabled={!inputCreateCarName}>
+        CREATE
+      </button>
     </form>
   );
 }

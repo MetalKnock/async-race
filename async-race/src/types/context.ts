@@ -1,5 +1,5 @@
 import React from 'react';
-import { ICar, ICars, IRaceEngines } from './data';
+import { ICar, ICars, IRaceEngines, IWinners } from './data';
 
 export interface IGarageContext {
   pageGarage: number;
@@ -11,6 +11,7 @@ export interface IGarageContext {
   inputUpdateCarColor: string;
   inputCreateCarName: string;
   inputCreateCarColor: string;
+  haveWinner: boolean;
   setPageGarage: React.Dispatch<React.SetStateAction<number>>;
   setCars: React.Dispatch<React.SetStateAction<ICars>>;
   setCarsQuantity: React.Dispatch<React.SetStateAction<number>>;
@@ -20,9 +21,14 @@ export interface IGarageContext {
   setInputUpdateCarColor: React.Dispatch<React.SetStateAction<string>>;
   setInputCreateCarName: React.Dispatch<React.SetStateAction<string>>;
   setInputCreateCarColor: React.Dispatch<React.SetStateAction<string>>;
+  setHaveWinner: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface IWinnersContext {
   pageWinners: number;
+  winners: IWinners;
+  winnersQuantity: number;
   setPageWinners: React.Dispatch<React.SetStateAction<number>>;
+  setWinners: React.Dispatch<React.SetStateAction<IWinners>>;
+  setWinnersQuantity: React.Dispatch<React.SetStateAction<number>>;
 }

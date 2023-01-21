@@ -1,9 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { controlCarEngine, createWinner, driveMode } from '../../api/raceAPI';
+import {
+  controlCarEngine,
+  createWinner,
+  driveMode,
+  getWinners,
+  updateWinner,
+} from '../../api/raceAPI';
 import { WIDTH_CAR_ICON } from '../../const/const';
 import useGarageContext from '../../hooks/useGarageContext';
 import { ICar, IRaceEngine, IWinner } from '../../types/data';
-import { easeInOutSine } from '../../utils/common';
+import { convertMillisecondsToSeconds, easeInOutSine } from '../../utils/common';
 import CarIcon from '../Icons/CarIcon';
 import FinishIcon from '../Icons/FinishIcon';
 import styles from './Car.module.scss';
@@ -15,7 +21,7 @@ interface CarProps {
 }
 
 export default function Car({ carsLength, data }: CarProps) {
-  const { raceEngines } = useGarageContext();
+  const { raceEngines, haveWinner, setHaveWinner } = useGarageContext();
 
   const [positionX, setPositionX] = useState(0);
   const [isAnimated, setIsAnimated] = useState(false);
@@ -53,18 +59,46 @@ export default function Car({ carsLength, data }: CarProps) {
       const translate = easeInOutSine(progress) * distance;
       setPositionX(translate);
     });
-    if (!(await driveMode({ id: data.id })).success) {
+    const driveModeData = await driveMode({ id: data.id });
+    if (!driveModeData) {
+      throw Error('driveMode in null');
+    }
+    if (!driveModeData.success) {
       cancelAnimationFrame(requestId.current);
-    } else if (raceEngines.length === carsLength) {
-      const winner: IWinner = { id: data.id, time: duration, wins: 1 };
-      await createWinner({ data: winner });
+    } else if (raceEngines.length === carsLength && !haveWinner) {
+      setHaveWinner(true);
+
+      const winnersData = await getWinners({});
+      if (!winnersData) {
+        throw Error('getWinners in null');
+      }
+      if (winnersData.winners) {
+        const currentObj: IWinner | undefined = winnersData.winners.find(
+          (val) => val.id === data.id,
+        );
+        const time = convertMillisecondsToSeconds(duration, 3);
+        if (currentObj) {
+          await updateWinner({
+            data: {
+              wins: currentObj.wins + 1,
+              time: currentObj.time < time ? currentObj.time : time,
+            },
+            id: data.id,
+          });
+        } else {
+          await createWinner({ data: { id: data.id, time, wins: 1 } });
+        }
+      }
     }
   };
 
   const handleClickStart = async () => {
     setIsAnimated(true);
-    const result = await controlCarEngine({ id: data.id, status: 'started' });
-    await startRace({ id: data.id, engine: result });
+    const carEngineData = await controlCarEngine({ id: data.id, status: 'started' });
+    if (!carEngineData) {
+      throw Error('controlCarEngine is null');
+    }
+    await startRace({ id: data.id, engine: carEngineData });
   };
 
   const handleClickStop = async () => {

@@ -3,7 +3,6 @@ import { getCars, updateCar } from '../../../api/raceAPI';
 import { INIT_SELECTED_CAR } from '../../../const/const';
 import useGarageContext from '../../../hooks/useGarageContext';
 import { ICarCreate } from '../../../types/data';
-import { IGetCars } from '../../../types/raceAPI';
 import styles from './UpdateCar.module.scss';
 
 export default function UpdateCar() {
@@ -31,10 +30,13 @@ export default function UpdateCar() {
         color: color.current.value,
       };
       await updateCar({ data, idSelectedCar: selectedCar.id });
-      const result: IGetCars = await getCars({ pageGarage });
-      setCarsQuantity(result.quantity);
-      if (result.cars) {
-        setCars(result.cars);
+      const carsData = await getCars({ pageGarage });
+      if (!carsData) {
+        throw Error('getCars is null');
+      }
+      setCarsQuantity(carsData.quantity);
+      if (carsData.cars) {
+        setCars(carsData.cars);
       }
       setSelectedCar(INIT_SELECTED_CAR);
     }

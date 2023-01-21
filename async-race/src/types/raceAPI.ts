@@ -1,7 +1,11 @@
-import { ICarCreate, ICars, IWinner, IWinners, IWinnerUpdate } from './data';
+import { ICar, ICarCreate, ICars, IWinner, IWinnerUpdate } from './data';
 
 export interface getCarsProps {
   pageGarage: number;
+}
+
+export interface getCarProps {
+  id: number;
 }
 
 export interface createCarProps {
@@ -27,10 +31,14 @@ export interface driveModeProps {
 }
 
 export interface getWinnersProps {
-  page: number;
+  page?: number;
   limit?: number;
   sort?: 'id' | 'wins' | 'time';
   order?: 'ASC' | 'DESC';
+}
+
+export interface getWinnerProps {
+  id: number;
 }
 
 export interface createWinnerProps {
@@ -46,9 +54,8 @@ export interface updateWinnerProps {
   id: number;
 }
 
-export interface IGetWinners {
-  winners: IWinners | null;
-  quantity: number;
+export interface IGetWinner {
+  winner: IWinner | null;
 }
 
 export interface IGetCars {
@@ -56,6 +63,9 @@ export interface IGetCars {
   quantity: number;
 }
 
+export interface IGetCar {
+  car: ICar | null;
+}
 export interface IDriveMode {
   success: boolean;
 }

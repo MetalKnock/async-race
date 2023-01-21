@@ -18,3 +18,6 @@ export const getRandomNData = (n: number): ICarsCreate =>
   [...Array<ICarCreate>(n)].map(() => getRandomData());
 
 export const easeInOutSine = (x: number): number => -(Math.cos(Math.PI * x) - 1) / 2;
+
+export const convertMillisecondsToSeconds = (num: number, numbersAfterPpoint: number): number =>
+  Number((num / 1000).toFixed(numbersAfterPpoint));

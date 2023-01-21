@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DEFAULT_COLOR_INPUT, INIT_SELECTED_CAR } from '../const/const';
+import { DEFAULT_COLOR, INIT_SELECTED_CAR } from '../const/const';
 import { IGarageContext } from '../types/context';
 import { ICar, ICars, IRaceEngines } from '../types/data';
 
@@ -16,9 +16,10 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
   const [selectedCar, setSelectedCar] = useState<ICar>(INIT_SELECTED_CAR);
   const [raceEngines, setRaceEngines] = useState<IRaceEngines>([]);
   const [inputUpdateCarName, setInputUpdateCarName] = useState('');
-  const [inputUpdateCarColor, setInputUpdateCarColor] = useState(DEFAULT_COLOR_INPUT);
+  const [inputUpdateCarColor, setInputUpdateCarColor] = useState(DEFAULT_COLOR);
   const [inputCreateCarName, setInputCreateCarName] = useState('');
-  const [inputCreateCarColor, setInputCreateCarColor] = useState(DEFAULT_COLOR_INPUT);
+  const [inputCreateCarColor, setInputCreateCarColor] = useState(DEFAULT_COLOR);
+  const [haveWinner, setHaveWinner] = useState(false);
 
   const value = React.useMemo(
     () => ({
@@ -31,6 +32,7 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
       inputUpdateCarColor,
       inputCreateCarName,
       inputCreateCarColor,
+      haveWinner,
       setPageGarage,
       setCars,
       setCarsQuantity,
@@ -40,6 +42,7 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
       setInputUpdateCarColor,
       setInputCreateCarName,
       setInputCreateCarColor,
+      setHaveWinner,
     }),
     [
       pageGarage,
@@ -51,6 +54,7 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
       inputUpdateCarColor,
       inputCreateCarName,
       inputCreateCarColor,
+      haveWinner,
     ],
   );
   return <GarageContext.Provider value={value}>{children}</GarageContext.Provider>;
