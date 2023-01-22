@@ -1,5 +1,13 @@
 import React from 'react';
-import { ICar, ICars, IFinishedCars, IQuerySort, IRaceEngines, IWinners } from './data';
+import {
+  ICar,
+  ICars,
+  IFinishedCars,
+  IQuerySort,
+  IRaceEngines,
+  IWinners,
+  IIsAnimatedCars,
+} from './data';
 
 export interface IGarageContext {
   pageGarage: number;
@@ -14,6 +22,8 @@ export interface IGarageContext {
   finishedCars: IFinishedCars[];
   isOpenModal: boolean;
   abortContollers: AbortController[];
+  isStartedRace: boolean;
+  isAnimatedCars: IIsAnimatedCars[];
   setPageGarage: React.Dispatch<React.SetStateAction<number>>;
   setCars: React.Dispatch<React.SetStateAction<ICars>>;
   setCarsQuantity: React.Dispatch<React.SetStateAction<number>>;
@@ -26,6 +36,8 @@ export interface IGarageContext {
   setFinishedCars: React.Dispatch<React.SetStateAction<IFinishedCars[]>>;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   setAbortControllers: React.Dispatch<React.SetStateAction<AbortController[]>>;
+  setIsStartedRace: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAnimatedCars: React.Dispatch<React.SetStateAction<IIsAnimatedCars[]>>;
 }
 
 export interface IWinnersContext {

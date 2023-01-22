@@ -15,10 +15,16 @@ interface CarProps {
 }
 
 export default function Car({ carsLength, data }: CarProps) {
-  const { raceEngines, setFinishedCars, setAbortControllers } = useGarageContext();
+  const {
+    isAnimatedCars,
+    raceEngines,
+    isStartedRace,
+    setFinishedCars,
+    setAbortControllers,
+    setIsAnimatedCars,
+  } = useGarageContext();
 
   const [positionX, setPositionX] = useState(0);
-  const [isAnimated, setIsAnimated] = useState(false);
   const [engineReady, setEngineReady] = useState(false);
 
   const requestId = useRef(0);
@@ -79,7 +85,7 @@ export default function Car({ carsLength, data }: CarProps) {
   };
 
   const handleClickStart = async () => {
-    setIsAnimated(true);
+    setIsAnimatedCars((arr) => [...arr, { bool: true, id: data.id }]);
 
     const carEngineData = await controlCarEngine({ id: data.id, status: 'started' });
 
@@ -99,14 +105,14 @@ export default function Car({ carsLength, data }: CarProps) {
     await controlCarEngine({ id: data.id, status: 'stopped' });
     cancelAnimationFrame(requestId.current);
     setPositionX(0);
-    setIsAnimated(false);
+    setIsAnimatedCars((cars) => cars.filter((car) => car.id !== data.id));
   };
 
   useEffect(() => {
     if (raceEngines.length === carsLength) {
       const raceEngine = raceEngines.find((val) => val.id === data.id);
       if (raceEngine) {
-        setIsAnimated(true);
+        setIsAnimatedCars((arr) => [...arr, { bool: true, id: data.id }]);
         startRace(raceEngine);
       }
     } else if (raceEngines.length > 0) {
@@ -117,7 +123,7 @@ export default function Car({ carsLength, data }: CarProps) {
         }
         cancelAnimationFrame(requestId.current);
         setPositionX(0);
-        setIsAnimated(false);
+        setIsAnimatedCars((cars) => cars.filter((car) => car.id !== data.id));
       }
     }
   }, [raceEngines]);
@@ -125,14 +131,14 @@ export default function Car({ carsLength, data }: CarProps) {
   return (
     <div className={styles.car}>
       <div className={styles.car__header}>
-        <CarControls data={data} isAnimated={isAnimated} />
+        <CarControls data={data} />
         <div className={styles.car__name}>{data.name}</div>
       </div>
       <div className={`${styles.car__track} ${styles.car__inner}`}>
         <button
           type="button"
           className={styles.carControls__select}
-          disabled={isAnimated}
+          disabled={Boolean(isAnimatedCars.find((car) => car.id === data.id)) || isStartedRace}
           onClick={handleClickStart}
         >
           A
@@ -140,7 +146,11 @@ export default function Car({ carsLength, data }: CarProps) {
         <button
           type="button"
           className={styles.carControls__select}
-          disabled={!isAnimated || !engineReady}
+          disabled={
+            Boolean(!isAnimatedCars.find((car) => car.id === data.id)) ||
+            !engineReady ||
+            isStartedRace
+          }
           onClick={handleClickStop}
         >
           B

@@ -7,9 +7,11 @@ import styles from './CreateCar.module.scss';
 
 export default function CreateCar() {
   const {
+    isAnimatedCars,
     pageGarage,
     inputCreateCarName,
     inputCreateCarColor,
+    isStartedRace,
     setCars,
     setCarsQuantity,
     setInputCreateCarName,
@@ -54,9 +56,23 @@ export default function CreateCar() {
 
   return (
     <form className={styles.createCar} onSubmit={handleSubmitCreate}>
-      <input type="text" ref={name} value={inputCreateCarName} onChange={handleChangeName} />
-      <input type="color" ref={color} value={inputCreateCarColor} onChange={handleChangeColor} />
-      <button type="submit">CREATE</button>
+      <input
+        type="text"
+        ref={name}
+        value={inputCreateCarName}
+        onChange={handleChangeName}
+        disabled={isStartedRace || isAnimatedCars.length !== 0}
+      />
+      <input
+        type="color"
+        ref={color}
+        value={inputCreateCarColor}
+        onChange={handleChangeColor}
+        disabled={isStartedRace || isAnimatedCars.length !== 0}
+      />
+      <button type="submit" disabled={isStartedRace || isAnimatedCars.length !== 0}>
+        CREATE
+      </button>
     </form>
   );
 }

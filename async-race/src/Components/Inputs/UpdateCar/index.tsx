@@ -7,6 +7,8 @@ import styles from './UpdateCar.module.scss';
 
 export default function UpdateCar() {
   const {
+    isAnimatedCars,
+    isStartedRace,
     pageGarage,
     carsQuantity,
     selectedCar,
@@ -56,7 +58,11 @@ export default function UpdateCar() {
 
   useEffect(() => {
     if (carsQuantity > 0) {
-      console.log(inputUpdateCarName);
+      // if (selectedCar.id !== ) {
+      //   console.log(1);
+      // }
+      // console.log(selectedCar.name);
+      // console.log(inputUpdateCarName);
       // if (inputUpdateCarColor === selectedCar.color) {
       setInputUpdateCarName(selectedCar.name);
       setInputUpdateCarColor(selectedCar.color);
@@ -70,17 +76,20 @@ export default function UpdateCar() {
         type="text"
         ref={name}
         value={inputUpdateCarName}
-        disabled={selectedCar === INIT_SELECTED_CAR}
+        disabled={selectedCar === INIT_SELECTED_CAR || isStartedRace || isAnimatedCars.length !== 0}
         onChange={handleChangeName}
       />
       <input
         type="color"
         ref={color}
         value={inputUpdateCarColor}
-        disabled={selectedCar === INIT_SELECTED_CAR}
+        disabled={selectedCar === INIT_SELECTED_CAR || isStartedRace || isAnimatedCars.length !== 0}
         onChange={handleChangeColor}
       />
-      <button type="submit" disabled={selectedCar === INIT_SELECTED_CAR}>
+      <button
+        type="submit"
+        disabled={selectedCar === INIT_SELECTED_CAR || isStartedRace || isAnimatedCars.length !== 0}
+      >
         UPDATE
       </button>
     </form>

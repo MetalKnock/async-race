@@ -8,11 +8,18 @@ import styles from './CarControls.module.scss';
 
 interface CarControlsProps {
   data: ICar;
-  isAnimated: boolean;
 }
 
-export default function CarControls({ data, isAnimated }: CarControlsProps) {
-  const { selectedCar, pageGarage, setSelectedCar, setCarsQuantity, setCars } = useGarageContext();
+export default function CarControls({ data }: CarControlsProps) {
+  const {
+    isAnimatedCars,
+    selectedCar,
+    pageGarage,
+    isStartedRace,
+    setSelectedCar,
+    setCarsQuantity,
+    setCars,
+  } = useGarageContext();
   const { pageWinners, setWinners, setWinnersQuantity } = useWinnersContext();
 
   const handleClickRemove = async () => {
@@ -31,12 +38,11 @@ export default function CarControls({ data, isAnimated }: CarControlsProps) {
       if (!winnersDataOther) {
         throw Error('getWinners is null');
       }
-      if (winnersDataOther.winners && winnersDataOther.quantity) {
+      if (winnersDataOther.winners && winnersDataOther.quantity !== null) {
         setWinners(winnersDataOther.winners);
         setWinnersQuantity(winnersDataOther.quantity);
       }
     }
-
     if (selectedCar.id === data.id) {
       setSelectedCar(INIT_SELECTED_CAR);
     }
@@ -59,7 +65,7 @@ export default function CarControls({ data, isAnimated }: CarControlsProps) {
       <button
         type="button"
         className={styles.carControls__select}
-        disabled={selectedCar.id === data.id || isAnimated}
+        disabled={selectedCar.id === data.id || isAnimatedCars.length !== 0 || isStartedRace}
         onClick={handleClickSelect}
       >
         SELECT
@@ -67,7 +73,7 @@ export default function CarControls({ data, isAnimated }: CarControlsProps) {
       <button
         type="button"
         className={styles.carControls__remove}
-        disabled={isAnimated}
+        disabled={isAnimatedCars.length !== 0 || isStartedRace}
         onClick={handleClickRemove}
       >
         REMOVE

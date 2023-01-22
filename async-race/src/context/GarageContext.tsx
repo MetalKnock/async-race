@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DEFAULT_COLOR, INIT_SELECTED_CAR } from '../const/const';
 import { IGarageContext } from '../types/context';
-import { ICar, ICars, IFinishedCars, IRaceEngines } from '../types/data';
+import { ICar, ICars, IFinishedCars, IIsAnimatedCars, IRaceEngines } from '../types/data';
 
 export const GarageContext = React.createContext<IGarageContext | null>(null);
 
@@ -22,6 +22,8 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
   const [finishedCars, setFinishedCars] = useState<IFinishedCars[]>([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [abortContollers, setAbortControllers] = useState<AbortController[]>([]);
+  const [isStartedRace, setIsStartedRace] = useState(false);
+  const [isAnimatedCars, setIsAnimatedCars] = useState<IIsAnimatedCars[]>([]);
 
   const value = React.useMemo(
     () => ({
@@ -37,6 +39,8 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
       finishedCars,
       isOpenModal,
       abortContollers,
+      isStartedRace,
+      isAnimatedCars,
       setPageGarage,
       setCars,
       setCarsQuantity,
@@ -49,6 +53,8 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
       setFinishedCars,
       setIsOpenModal,
       setAbortControllers,
+      setIsStartedRace,
+      setIsAnimatedCars,
     }),
     [
       pageGarage,
@@ -63,6 +69,8 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
       finishedCars,
       isOpenModal,
       abortContollers,
+      isStartedRace,
+      isAnimatedCars,
     ],
   );
   return <GarageContext.Provider value={value}>{children}</GarageContext.Provider>;

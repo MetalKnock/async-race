@@ -11,7 +11,7 @@ interface PaginationProps {
 }
 
 export default function Pagination({ numberOfPages, page, type, setPage }: PaginationProps) {
-  const { setRaceEngines } = useGarageContext();
+  const { isAnimatedCars, isStartedRace, setRaceEngines } = useGarageContext();
 
   const handleClickPrev = () => {
     if (page > 1) {
@@ -37,7 +37,7 @@ export default function Pagination({ numberOfPages, page, type, setPage }: Pagin
       <button
         className={styles.pagination__buttonPrev}
         type="button"
-        disabled={page === 1}
+        disabled={page === 1 || isStartedRace || isAnimatedCars.length !== 0}
         onClick={handleClickPrev}
       >
         PREV
@@ -45,7 +45,12 @@ export default function Pagination({ numberOfPages, page, type, setPage }: Pagin
       <button
         className={styles.pagination__buttonNext}
         type="button"
-        disabled={page === numberOfPages || numberOfPages === 0}
+        disabled={
+          page === numberOfPages ||
+          numberOfPages === 0 ||
+          isStartedRace ||
+          isAnimatedCars.length !== 0
+        }
         onClick={handleClickNext}
       >
         NEXT

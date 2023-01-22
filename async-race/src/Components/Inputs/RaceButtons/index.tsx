@@ -16,16 +16,19 @@ import styles from './RaceButtons.module.scss';
 
 export default function RaceButtons() {
   const {
+    isAnimatedCars,
     finishedCars,
     pageGarage,
     raceEngines,
     abortContollers,
+    isStartedRace,
     setCarsQuantity,
     setCars,
     setRaceEngines,
     setIsOpenModal,
     setFinishedCars,
     setAbortControllers,
+    setIsStartedRace,
   } = useGarageContext();
 
   const handleClickRandomButton = async () => {
@@ -41,6 +44,7 @@ export default function RaceButtons() {
   };
 
   const handleClickStartRace = async () => {
+    setIsStartedRace(true);
     const carsData = await getCars({ pageGarage });
     if (!carsData) {
       throw Error('getCars is null');
@@ -112,6 +116,7 @@ export default function RaceButtons() {
       }),
     );
     setIsOpenModal(false);
+    setIsStartedRace(false);
     setFinishedCars([]);
   };
 
@@ -123,16 +128,20 @@ export default function RaceButtons() {
 
   return (
     <div className={styles.raceButtons}>
-      <button type="button" onClick={handleClickStartRace}>
+      <button
+        type="button"
+        onClick={handleClickStartRace}
+        disabled={isStartedRace || isAnimatedCars.length !== 0}
+      >
         START
       </button>
-      <button type="button" onClick={handleClickReset}>
+      <button type="button" onClick={handleClickReset} disabled={isAnimatedCars.length === 0}>
         RESET
       </button>
       <button
         className={styles.raceButtons__random}
         type="button"
-        disabled={false}
+        disabled={isStartedRace || isAnimatedCars.length !== 0}
         onClick={handleClickRandomButton}
       >
         RANDOM

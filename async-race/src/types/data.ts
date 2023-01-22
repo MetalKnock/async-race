@@ -46,3 +46,8 @@ export interface IFinishedCars {
   id: number;
   duration: number;
 }
+
+export interface IIsAnimatedCars {
+  id: number;
+  bool: boolean;
+}
