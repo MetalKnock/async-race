@@ -91,10 +91,11 @@ export const controlCarEngine = async ({ id, status }: controlCarEngineProps) =>
   }
 };
 
-export const driveMode = async ({ id }: driveModeProps) => {
+export const driveMode = async ({ id, signal }: driveModeProps) => {
   try {
     const response = await fetch(`${BASE}${PATH.engine}?id=${id}&status=drive`, {
       method: 'PATCH',
+      signal,
     }).catch((e) => e);
 
     return response.ok ? { success: true } : { success: false };

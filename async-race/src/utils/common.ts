@@ -19,5 +19,5 @@ export const getRandomNData = (n: number): ICarsCreate =>
 
 export const easeInOutSine = (x: number): number => -(Math.cos(Math.PI * x) - 1) / 2;
 
-export const convertMillisecondsToSeconds = (num: number, numbersAfterPpoint: number): number =>
-  Number((num / 1000).toFixed(numbersAfterPpoint));
+export const convertMillisecondsToSeconds = (num: number, numbersAfterPoint: number): number =>
+  Number((num / 1000).toFixed(numbersAfterPoint));

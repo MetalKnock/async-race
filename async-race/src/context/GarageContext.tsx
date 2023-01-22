@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DEFAULT_COLOR, INIT_SELECTED_CAR } from '../const/const';
 import { IGarageContext } from '../types/context';
-import { ICar, ICars, IRaceEngines } from '../types/data';
+import { ICar, ICars, IFinishedCars, IRaceEngines } from '../types/data';
 
 export const GarageContext = React.createContext<IGarageContext | null>(null);
 
@@ -19,7 +19,9 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
   const [inputUpdateCarColor, setInputUpdateCarColor] = useState(DEFAULT_COLOR);
   const [inputCreateCarName, setInputCreateCarName] = useState('');
   const [inputCreateCarColor, setInputCreateCarColor] = useState(DEFAULT_COLOR);
-  const [haveWinner, setHaveWinner] = useState(false);
+  const [finishedCars, setFinishedCars] = useState<IFinishedCars[]>([]);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [abortContollers, setAbortControllers] = useState<AbortController[]>([]);
 
   const value = React.useMemo(
     () => ({
@@ -32,7 +34,9 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
       inputUpdateCarColor,
       inputCreateCarName,
       inputCreateCarColor,
-      haveWinner,
+      finishedCars,
+      isOpenModal,
+      abortContollers,
       setPageGarage,
       setCars,
       setCarsQuantity,
@@ -42,7 +46,9 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
       setInputUpdateCarColor,
       setInputCreateCarName,
       setInputCreateCarColor,
-      setHaveWinner,
+      setFinishedCars,
+      setIsOpenModal,
+      setAbortControllers,
     }),
     [
       pageGarage,
@@ -54,7 +60,9 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
       inputUpdateCarColor,
       inputCreateCarName,
       inputCreateCarColor,
-      haveWinner,
+      finishedCars,
+      isOpenModal,
+      abortContollers,
     ],
   );
   return <GarageContext.Provider value={value}>{children}</GarageContext.Provider>;

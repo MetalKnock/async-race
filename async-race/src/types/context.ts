@@ -1,5 +1,5 @@
 import React from 'react';
-import { ICar, ICars, IQuerySort, IRaceEngines, IWinners } from './data';
+import { ICar, ICars, IFinishedCars, IQuerySort, IRaceEngines, IWinners } from './data';
 
 export interface IGarageContext {
   pageGarage: number;
@@ -11,8 +11,9 @@ export interface IGarageContext {
   inputUpdateCarColor: string;
   inputCreateCarName: string;
   inputCreateCarColor: string;
-  haveWinner: boolean;
-
+  finishedCars: IFinishedCars[];
+  isOpenModal: boolean;
+  abortContollers: AbortController[];
   setPageGarage: React.Dispatch<React.SetStateAction<number>>;
   setCars: React.Dispatch<React.SetStateAction<ICars>>;
   setCarsQuantity: React.Dispatch<React.SetStateAction<number>>;
@@ -22,7 +23,9 @@ export interface IGarageContext {
   setInputUpdateCarColor: React.Dispatch<React.SetStateAction<string>>;
   setInputCreateCarName: React.Dispatch<React.SetStateAction<string>>;
   setInputCreateCarColor: React.Dispatch<React.SetStateAction<string>>;
-  setHaveWinner: React.Dispatch<React.SetStateAction<boolean>>;
+  setFinishedCars: React.Dispatch<React.SetStateAction<IFinishedCars[]>>;
+  setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setAbortControllers: React.Dispatch<React.SetStateAction<AbortController[]>>;
 }
 
 export interface IWinnersContext {

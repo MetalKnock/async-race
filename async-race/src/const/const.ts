@@ -27,6 +27,8 @@ export const CARS_PER_PAGE = 7;
 
 export const WINNERS_PER_PAGE = 10;
 
+export const DIGITS_AFTER_DECIMAL_POINT_TIME = 3;
+
 export const DEFAULT_COLOR = '#000000';
 
 export const INIT_SELECTED_CAR: ICar = {

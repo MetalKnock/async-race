@@ -1,13 +1,32 @@
-import React from 'react';
-import { controlCarEngine, createCar, getCars } from '../../../api/raceAPI';
+import React, { useEffect } from 'react';
+import {
+  controlCarEngine,
+  createCar,
+  createWinner,
+  getCars,
+  getWinners,
+  updateWinner,
+} from '../../../api/raceAPI';
 import { INIT_RACE_ENGINE } from '../../../const/const';
 import useGarageContext from '../../../hooks/useGarageContext';
-import { getRandomNData } from '../../../utils/common';
+import { IFinishedCars, IWinner } from '../../../types/data';
+
+import { convertMillisecondsToSeconds, getRandomNData } from '../../../utils/common';
 import styles from './RaceButtons.module.scss';
 
 export default function RaceButtons() {
-  const { pageGarage, raceEngines, setCarsQuantity, setCars, setRaceEngines, setHaveWinner } =
-    useGarageContext();
+  const {
+    finishedCars,
+    pageGarage,
+    raceEngines,
+    abortContollers,
+    setCarsQuantity,
+    setCars,
+    setRaceEngines,
+    setIsOpenModal,
+    setFinishedCars,
+    setAbortControllers,
+  } = useGarageContext();
 
   const handleClickRandomButton = async () => {
     await Promise.all(getRandomNData(100).map((data) => createCar({ data })));
@@ -22,14 +41,14 @@ export default function RaceButtons() {
   };
 
   const handleClickStartRace = async () => {
-    const result = await getCars({ pageGarage });
-    if (!result) {
+    const carsData = await getCars({ pageGarage });
+    if (!carsData) {
       throw Error('getCars is null');
     }
-    if (result.cars) {
+    if (carsData.cars) {
       setRaceEngines(
         await Promise.all(
-          result.cars.map(async (car) => {
+          carsData.cars.map(async (car) => {
             const carEngineData = await controlCarEngine({ id: car.id, status: 'started' });
             if (!carEngineData) {
               throw Error('controlCarEngine is null');
@@ -44,7 +63,34 @@ export default function RaceButtons() {
     }
   };
 
+  const addFirstFinishedInWinners = async (firstFinished: IFinishedCars) => {
+    setIsOpenModal(true);
+    const winnersData = await getWinners({});
+    if (!winnersData) {
+      throw Error('getWinners in null');
+    }
+    if (winnersData.winners) {
+      const currentObj: IWinner | undefined = winnersData.winners.find(
+        (val) => val.id === firstFinished.id,
+      );
+      const time = convertMillisecondsToSeconds(firstFinished.duration, 3);
+      if (currentObj) {
+        await updateWinner({
+          data: {
+            wins: currentObj.wins + 1,
+            time: currentObj.time < time ? currentObj.time : time,
+          },
+          id: firstFinished.id,
+        });
+      } else {
+        await createWinner({ data: { id: firstFinished.id, time, wins: 1 } });
+      }
+    }
+  };
+
   const handleClickReset = async () => {
+    abortContollers.map((val) => val.abort());
+    setAbortControllers([]);
     const carsData = await getCars({ pageGarage });
     if (!carsData) {
       throw Error('getCars is null');
@@ -52,18 +98,28 @@ export default function RaceButtons() {
     if (!carsData.cars) {
       throw Error('cars is null');
     }
-    setHaveWinner(false);
+
     let copyRaceEngines = [...raceEngines];
-    carsData.cars.map(async (car) => {
-      await controlCarEngine({ id: car.id, status: 'stopped' });
-      if (copyRaceEngines.length > 1) {
-        copyRaceEngines = copyRaceEngines.filter((raceEngine) => raceEngine.id !== car.id);
-        setRaceEngines(copyRaceEngines);
-      } else {
-        setRaceEngines([INIT_RACE_ENGINE]);
-      }
-    });
+    await Promise.all(
+      carsData.cars.map(async (car) => {
+        await controlCarEngine({ id: car.id, status: 'stopped' });
+        if (copyRaceEngines.length > 1) {
+          copyRaceEngines = copyRaceEngines.filter((raceEngine) => raceEngine.id !== car.id);
+          setRaceEngines(copyRaceEngines);
+        } else {
+          setRaceEngines([INIT_RACE_ENGINE]);
+        }
+      }),
+    );
+    setIsOpenModal(false);
+    setFinishedCars([]);
   };
+
+  useEffect(() => {
+    if (finishedCars.length === 1 && raceEngines.length > 0) {
+      addFirstFinishedInWinners(finishedCars[0]);
+    }
+  }, [finishedCars]);
 
   return (
     <div className={styles.raceButtons}>

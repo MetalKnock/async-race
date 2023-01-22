@@ -28,6 +28,7 @@ export interface controlCarEngineProps {
 
 export interface driveModeProps {
   id: number;
+  signal?: AbortSignal;
 }
 
 export interface getWinnersProps {

@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { getCars } from '../../api/raceAPI';
 import Car from '../../Components/Car';
 import Inputs from '../../Components/Inputs';
+import ModalWin from '../../Components/ModalWin';
 import Pagination from '../../Components/Pagination';
 import { CARS_PER_PAGE, TYPE_PAGINATION } from '../../const/const';
 import useGarageContext from '../../hooks/useGarageContext';
@@ -9,7 +10,7 @@ import useGarageContext from '../../hooks/useGarageContext';
 import styles from './Garage.module.scss';
 
 export default function Garage() {
-  const { pageGarage, cars, carsQuantity, setPageGarage, setCars, setCarsQuantity } =
+  const { isOpenModal, pageGarage, cars, carsQuantity, setPageGarage, setCars, setCarsQuantity } =
     useGarageContext();
 
   useEffect(() => {
@@ -43,7 +44,8 @@ export default function Garage() {
         setPage={setPageGarage}
         type={TYPE_PAGINATION.garage}
       />
-      <div>
+      <div className={styles.garage__cars}>
+        {isOpenModal && <ModalWin />}
         {cars.map((car) => (
           <Car key={car.id} carsLength={cars.length} data={car} />
         ))}

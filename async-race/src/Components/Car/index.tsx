@@ -1,15 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  controlCarEngine,
-  createWinner,
-  driveMode,
-  getWinners,
-  updateWinner,
-} from '../../api/raceAPI';
+import { controlCarEngine, driveMode } from '../../api/raceAPI';
 import { WIDTH_CAR_ICON } from '../../const/const';
 import useGarageContext from '../../hooks/useGarageContext';
-import { ICar, IRaceEngine, IWinner } from '../../types/data';
-import { convertMillisecondsToSeconds, easeInOutSine } from '../../utils/common';
+import { ICar, IRaceEngine } from '../../types/data';
+import { easeInOutSine } from '../../utils/common';
 import CarIcon from '../Icons/CarIcon';
 import FinishIcon from '../Icons/FinishIcon';
 import styles from './Car.module.scss';
@@ -21,7 +15,7 @@ interface CarProps {
 }
 
 export default function Car({ carsLength, data }: CarProps) {
-  const { raceEngines, haveWinner, setHaveWinner } = useGarageContext();
+  const { raceEngines, setFinishedCars, setAbortControllers } = useGarageContext();
 
   const [positionX, setPositionX] = useState(0);
   const [isAnimated, setIsAnimated] = useState(false);
@@ -29,6 +23,7 @@ export default function Car({ carsLength, data }: CarProps) {
 
   const requestId = useRef(0);
   const refRoad = useRef<HTMLDivElement | null>(null);
+  const controller = useRef<AbortController | null>(null);
 
   const animation = (duration: number, callback: (progress: number) => void) => {
     let startAmination: number | null = null;
@@ -54,57 +49,53 @@ export default function Car({ carsLength, data }: CarProps) {
     if (refRoad.current) {
       widthRoad = refRoad.current.offsetWidth;
     }
+
     const duration = result.distance / result.velocity;
     const distance = widthRoad - WIDTH_CAR_ICON;
     animation(duration, (progress: number) => {
       const translate = easeInOutSine(progress) * distance;
       setPositionX(translate);
     });
-    const driveModeData = await driveMode({ id: data.id });
+
+    controller.current = new AbortController();
+    setAbortControllers((arr) => {
+      if (controller.current) {
+        return [...arr, controller.current];
+      }
+      return arr;
+    });
+
+    const driveModeData = await driveMode({ id: data.id, signal: controller.current.signal });
+
     if (!driveModeData) {
       throw Error('driveMode in null');
     }
+
     if (!driveModeData.success) {
       cancelAnimationFrame(requestId.current);
-    } else if (raceEngines.length === carsLength && !haveWinner) {
-      setHaveWinner(true);
-
-      const winnersData = await getWinners({});
-      if (!winnersData) {
-        throw Error('getWinners in null');
-      }
-      if (winnersData.winners) {
-        const currentObj: IWinner | undefined = winnersData.winners.find(
-          (val) => val.id === data.id,
-        );
-        const time = convertMillisecondsToSeconds(duration, 3);
-        if (currentObj) {
-          await updateWinner({
-            data: {
-              wins: currentObj.wins + 1,
-              time: currentObj.time < time ? currentObj.time : time,
-            },
-            id: data.id,
-          });
-        } else {
-          await createWinner({ data: { id: data.id, time, wins: 1 } });
-        }
-      }
+    } else if (raceEngines.length === carsLength) {
+      setFinishedCars((arr) => [...arr, { id: data.id, duration }]);
     }
   };
 
   const handleClickStart = async () => {
     setIsAnimated(true);
+
     const carEngineData = await controlCarEngine({ id: data.id, status: 'started' });
+
     if (!carEngineData) {
       throw Error('controlCarEngine is null');
     }
+
     setEngineReady(true);
     await startRace({ id: data.id, engine: carEngineData });
   };
 
   const handleClickStop = async () => {
     setEngineReady(false);
+    if (controller.current) {
+      controller.current.abort();
+    }
     await controlCarEngine({ id: data.id, status: 'stopped' });
     cancelAnimationFrame(requestId.current);
     setPositionX(0);
@@ -121,8 +112,12 @@ export default function Car({ carsLength, data }: CarProps) {
     } else if (raceEngines.length > 0) {
       const raceEngine = raceEngines.find((val) => val.id === data.id);
       if (!raceEngine) {
+        if (controller.current) {
+          controller.current.abort();
+        }
         cancelAnimationFrame(requestId.current);
         setPositionX(0);
+        setIsAnimated(false);
       }
     }
   }, [raceEngines]);
@@ -130,7 +125,7 @@ export default function Car({ carsLength, data }: CarProps) {
   return (
     <div className={styles.car}>
       <div className={styles.car__header}>
-        <CarControls data={data} />
+        <CarControls data={data} isAnimated={isAnimated} />
         <div className={styles.car__name}>{data.name}</div>
       </div>
       <div className={`${styles.car__track} ${styles.car__inner}`}>

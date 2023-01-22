@@ -1,17 +1,17 @@
 import React from 'react';
-import { deleteCar, deleteWinner, getCars, getWinner, getWinners } from '../../../api/raceAPI';
+import { deleteCar, deleteWinner, getCars, getWinners } from '../../../api/raceAPI';
 import { INIT_SELECTED_CAR, WINNERS_PER_PAGE } from '../../../const/const';
 import useGarageContext from '../../../hooks/useGarageContext';
 import useWinnersContext from '../../../hooks/useWinnersContext';
 import { ICar } from '../../../types/data';
-import { IGetCars } from '../../../types/raceAPI';
 import styles from './CarControls.module.scss';
 
 interface CarControlsProps {
   data: ICar;
+  isAnimated: boolean;
 }
 
-export default function CarControls({ data }: CarControlsProps) {
+export default function CarControls({ data, isAnimated }: CarControlsProps) {
   const { selectedCar, pageGarage, setSelectedCar, setCarsQuantity, setCars } = useGarageContext();
   const { pageWinners, setWinners, setWinnersQuantity } = useWinnersContext();
 
@@ -59,7 +59,7 @@ export default function CarControls({ data }: CarControlsProps) {
       <button
         type="button"
         className={styles.carControls__select}
-        disabled={selectedCar.id === data.id}
+        disabled={selectedCar.id === data.id || isAnimated}
         onClick={handleClickSelect}
       >
         SELECT
@@ -67,7 +67,7 @@ export default function CarControls({ data }: CarControlsProps) {
       <button
         type="button"
         className={styles.carControls__remove}
-        disabled={false}
+        disabled={isAnimated}
         onClick={handleClickRemove}
       >
         REMOVE

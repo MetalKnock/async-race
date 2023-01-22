@@ -56,8 +56,11 @@ export default function UpdateCar() {
 
   useEffect(() => {
     if (carsQuantity > 0) {
+      console.log(inputUpdateCarName);
+      // if (inputUpdateCarColor === selectedCar.color) {
       setInputUpdateCarName(selectedCar.name);
       setInputUpdateCarColor(selectedCar.color);
+      // }
     }
   }, [selectedCar]);
 

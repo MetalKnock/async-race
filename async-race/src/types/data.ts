@@ -41,3 +41,8 @@ export interface IQuerySort {
   sort: QUERY_SORT;
   order: QUERY_ORDER;
 }
+
+export interface IFinishedCars {
+  id: number;
+  duration: number;
+}
