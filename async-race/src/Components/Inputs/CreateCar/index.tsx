@@ -56,9 +56,7 @@ export default function CreateCar() {
     <form className={styles.createCar} onSubmit={handleSubmitCreate}>
       <input type="text" ref={name} value={inputCreateCarName} onChange={handleChangeName} />
       <input type="color" ref={color} value={inputCreateCarColor} onChange={handleChangeColor} />
-      <button type="submit" disabled={!inputCreateCarName}>
-        CREATE
-      </button>
+      <button type="submit">CREATE</button>
     </form>
   );
 }

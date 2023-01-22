@@ -1,5 +1,5 @@
 import React from 'react';
-import { ICar, ICars, IRaceEngines, IWinners } from './data';
+import { ICar, ICars, IQuerySort, IRaceEngines, IWinners } from './data';
 
 export interface IGarageContext {
   pageGarage: number;
@@ -12,6 +12,7 @@ export interface IGarageContext {
   inputCreateCarName: string;
   inputCreateCarColor: string;
   haveWinner: boolean;
+
   setPageGarage: React.Dispatch<React.SetStateAction<number>>;
   setCars: React.Dispatch<React.SetStateAction<ICars>>;
   setCarsQuantity: React.Dispatch<React.SetStateAction<number>>;
@@ -28,7 +29,9 @@ export interface IWinnersContext {
   pageWinners: number;
   winners: IWinners;
   winnersQuantity: number;
+  querySort: IQuerySort;
   setPageWinners: React.Dispatch<React.SetStateAction<number>>;
   setWinners: React.Dispatch<React.SetStateAction<IWinners>>;
   setWinnersQuantity: React.Dispatch<React.SetStateAction<number>>;
+  setQuerySort: React.Dispatch<React.SetStateAction<IQuerySort>>;
 }

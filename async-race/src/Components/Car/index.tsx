@@ -25,6 +25,7 @@ export default function Car({ carsLength, data }: CarProps) {
 
   const [positionX, setPositionX] = useState(0);
   const [isAnimated, setIsAnimated] = useState(false);
+  const [engineReady, setEngineReady] = useState(false);
 
   const requestId = useRef(0);
   const refRoad = useRef<HTMLDivElement | null>(null);
@@ -98,10 +99,12 @@ export default function Car({ carsLength, data }: CarProps) {
     if (!carEngineData) {
       throw Error('controlCarEngine is null');
     }
+    setEngineReady(true);
     await startRace({ id: data.id, engine: carEngineData });
   };
 
   const handleClickStop = async () => {
+    setEngineReady(false);
     await controlCarEngine({ id: data.id, status: 'stopped' });
     cancelAnimationFrame(requestId.current);
     setPositionX(0);
@@ -142,7 +145,7 @@ export default function Car({ carsLength, data }: CarProps) {
         <button
           type="button"
           className={styles.carControls__select}
-          disabled={!isAnimated}
+          disabled={!isAnimated || !engineReady}
           onClick={handleClickStop}
         >
           B

@@ -1,3 +1,5 @@
+import { QUERY_SORT, QUERY_ORDER } from '../const/const';
+
 export interface ICarCreate {
   name: string;
   color: string;
@@ -33,4 +35,9 @@ export type IWinners = IWinner[];
 export interface IWinnerUpdate {
   wins: number;
   time: number;
+}
+
+export interface IQuerySort {
+  sort: QUERY_SORT;
+  order: QUERY_ORDER;
 }

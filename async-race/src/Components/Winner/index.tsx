@@ -13,7 +13,6 @@ interface WinnerProps {
 
 export default function Winner({ data, index }: WinnerProps) {
   const { pageWinners } = useWinnersContext();
-
   const [currentCar, setCurrentCar] = useState<ICar | null>(null);
 
   const fetchApi = useCallback(async () => {
@@ -30,17 +29,21 @@ export default function Winner({ data, index }: WinnerProps) {
     fetchApi();
   }, []);
 
+  if (!currentCar) {
+    return <tr>{}</tr>;
+  }
   return (
-    <tr className={styles.winner__wrapper}>
-      {currentCar && <td>{index + 1 + (pageWinners - 1) * WINNERS_PER_PAGE}</td>}
-      {currentCar && currentCar.color !== DEFAULT_COLOR && (
-        <td>
+    <tr className={styles.winner__line}>
+      <td className={styles.winner__cell}>{index + 1 + (pageWinners - 1) * WINNERS_PER_PAGE}</td>
+      <td className={styles.winner__cell}>{data.id}</td>
+      {currentCar.color !== DEFAULT_COLOR && (
+        <td className={styles.winner__cell}>
           <CarIcon className={styles.winner__carIcon} color={currentCar.color} positionX={0} />
         </td>
       )}
-      {currentCar && <td>{currentCar.name}</td>}
-      {currentCar && <td>{data.wins}</td>}
-      {currentCar && <td>{data.time}</td>}
+      <td className={styles.winner__cell}>{currentCar.name}</td>
+      <td className={styles.winner__cell}>{data.wins}</td>
+      <td className={styles.winner__cell}>{data.time}</td>
     </tr>
   );
 }
