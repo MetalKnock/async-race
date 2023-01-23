@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { getCars, updateCar } from '../../../api/raceAPI';
-import { INIT_SELECTED_CAR } from '../../../const/const';
+import { DEFAULT_COLOR, INIT_SELECTED_CAR } from '../../../const/const';
 import useGarageContext from '../../../hooks/useGarageContext';
 import { ICarCreate } from '../../../types/data';
 import styles from './UpdateCar.module.scss';
@@ -10,7 +10,6 @@ export default function UpdateCar() {
     isAnimatedCars,
     isStartedRace,
     pageGarage,
-    carsQuantity,
     selectedCar,
     inputUpdateCarName,
     inputUpdateCarColor,
@@ -41,6 +40,8 @@ export default function UpdateCar() {
         setCars(carsData.cars);
       }
       setSelectedCar(INIT_SELECTED_CAR);
+      setInputUpdateCarName('');
+      setInputUpdateCarColor(DEFAULT_COLOR);
     }
   };
 
@@ -55,20 +56,6 @@ export default function UpdateCar() {
       setInputUpdateCarColor(e.target.value);
     }
   };
-
-  useEffect(() => {
-    if (carsQuantity > 0) {
-      // if (selectedCar.id !== ) {
-      //   console.log(1);
-      // }
-      // console.log(selectedCar.name);
-      // console.log(inputUpdateCarName);
-      // if (inputUpdateCarColor === selectedCar.color) {
-      setInputUpdateCarName(selectedCar.name);
-      setInputUpdateCarColor(selectedCar.color);
-      // }
-    }
-  }, [selectedCar]);
 
   return (
     <form className={styles.updateCar} onSubmit={handleSubmitUpdate}>

@@ -19,6 +19,8 @@ export default function CarControls({ data }: CarControlsProps) {
     setSelectedCar,
     setCarsQuantity,
     setCars,
+    setInputUpdateCarName,
+    setInputUpdateCarColor,
   } = useGarageContext();
   const { pageWinners, setWinners, setWinnersQuantity } = useWinnersContext();
 
@@ -58,6 +60,8 @@ export default function CarControls({ data }: CarControlsProps) {
 
   const handleClickSelect = () => {
     setSelectedCar(data);
+    setInputUpdateCarName(data.name);
+    setInputUpdateCarColor(data.color);
   };
 
   return (
