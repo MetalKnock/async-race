@@ -2,6 +2,16 @@ import { ICar, IQuerySort, IRaceEngine } from '../types/data';
 
 export const BASE = 'http://127.0.0.1:3000';
 
+export const CARS_PER_PAGE = 7;
+
+export const WINNERS_PER_PAGE = 10;
+
+export const DIGITS_AFTER_DECIMAL_POINT_TIME = 3;
+
+export const DEFAULT_COLOR = '#000000';
+
+export const WIDTH_CAR_ICON = 100;
+
 export enum PATH_ROUTER {
   garage = '/',
   winners = '/winners',
@@ -28,14 +38,6 @@ export enum QUERY_ORDER {
   desc = 'DESC',
 }
 
-export const CARS_PER_PAGE = 7;
-
-export const WINNERS_PER_PAGE = 10;
-
-export const DIGITS_AFTER_DECIMAL_POINT_TIME = 3;
-
-export const DEFAULT_COLOR = '#000000';
-
 export const INIT_SELECTED_CAR: ICar = {
   name: '',
   color: DEFAULT_COLOR,
@@ -51,5 +53,3 @@ export const INIT_RACE_ENGINE: IRaceEngine = {
   id: 0,
   engine: { velocity: 0, distance: 0 },
 };
-
-export const WIDTH_CAR_ICON = 100;

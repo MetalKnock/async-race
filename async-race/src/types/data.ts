@@ -51,3 +51,8 @@ export interface IIsAnimatedCars {
   id: number;
   bool: boolean;
 }
+
+export interface fetchApiProps {
+  sort: QUERY_SORT;
+  order: QUERY_ORDER;
+}

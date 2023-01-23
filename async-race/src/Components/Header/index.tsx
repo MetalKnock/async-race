@@ -7,8 +7,6 @@ import styles from './Header.module.scss';
 export default function Header() {
   const { isAnimatedCars, isStartedRace } = useGarageContext();
   const { pathname } = useLocation();
-  // const styleLink =
-  //   pathname === PATH_ROUTER.winners ? styles.header__link_winners : styles.header__link_garage;
 
   return (
     <header className={styles.header}>

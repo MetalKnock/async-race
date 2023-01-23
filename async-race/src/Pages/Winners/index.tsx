@@ -5,6 +5,7 @@ import Pagination from '../../Components/Pagination';
 import Winner from '../../Components/Winner';
 import { QUERY_ORDER, QUERY_SORT, TYPE_PAGINATION, WINNERS_PER_PAGE } from '../../const/const';
 import useWinnersContext from '../../hooks/useWinnersContext';
+import { fetchApiProps } from '../../types/data';
 import styles from './Winners.module.scss';
 
 export default function Winners() {
@@ -18,30 +19,6 @@ export default function Winners() {
     setWinnersQuantity,
     setQuerySort,
   } = useWinnersContext();
-
-  interface fetchApiProps {
-    sort: QUERY_SORT;
-    order: QUERY_ORDER;
-  }
-
-  const fetchApi = useCallback(
-    async ({ sort, order }: fetchApiProps) => {
-      const winnersData = await getWinners({
-        page: pageWinners,
-        limit: WINNERS_PER_PAGE,
-        sort,
-        order,
-      });
-      if (!winnersData) {
-        throw Error('getWinners is null');
-      }
-      if (winnersData.winners && winnersData.quantity) {
-        setWinners(winnersData.winners);
-        setWinnersQuantity(winnersData.quantity);
-      }
-    },
-    [pageWinners],
-  );
 
   const handleClickId = () => {
     setQuerySort({
@@ -72,6 +49,25 @@ export default function Winners() {
           : QUERY_ORDER.asc,
     });
   };
+
+  const fetchApi = useCallback(
+    async ({ sort, order }: fetchApiProps) => {
+      const winnersData = await getWinners({
+        page: pageWinners,
+        limit: WINNERS_PER_PAGE,
+        sort,
+        order,
+      });
+      if (!winnersData) {
+        throw Error('getWinners is null');
+      }
+      if (winnersData.winners && winnersData.quantity) {
+        setWinners(winnersData.winners);
+        setWinnersQuantity(winnersData.quantity);
+      }
+    },
+    [pageWinners],
+  );
 
   useEffect(() => {
     fetchApi(querySort);

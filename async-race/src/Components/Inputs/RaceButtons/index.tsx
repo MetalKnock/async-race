@@ -9,7 +9,7 @@ import {
 } from '../../../api/raceAPI';
 import { INIT_RACE_ENGINE } from '../../../const/const';
 import useGarageContext from '../../../hooks/useGarageContext';
-import { IFinishedCars, IWinner } from '../../../types/data';
+import { IFinishedCars } from '../../../types/data';
 
 import { convertMillisecondsToSeconds, getRandomNData } from '../../../utils/common';
 import styles from './RaceButtons.module.scss';
@@ -74,9 +74,7 @@ export default function RaceButtons() {
       throw Error('getWinners in null');
     }
     if (winnersData.winners) {
-      const currentObj: IWinner | undefined = winnersData.winners.find(
-        (val) => val.id === firstFinished.id,
-      );
+      const currentObj = winnersData.winners.find((val) => val.id === firstFinished.id);
       const time = convertMillisecondsToSeconds(firstFinished.duration, 3);
       if (currentObj) {
         await updateWinner({
@@ -102,7 +100,6 @@ export default function RaceButtons() {
     if (!carsData.cars) {
       throw Error('cars is null');
     }
-
     let copyRaceEngines = [...raceEngines];
     await Promise.all(
       carsData.cars.map(async (car) => {

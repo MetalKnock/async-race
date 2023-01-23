@@ -13,12 +13,6 @@ export default function Garage() {
   const { isOpenModal, pageGarage, cars, carsQuantity, setPageGarage, setCars, setCarsQuantity } =
     useGarageContext();
 
-  useEffect(() => {
-    if (cars.length === 0 && carsQuantity > 0) {
-      setPageGarage(pageGarage - 1);
-    }
-  }, [cars]);
-
   const fetchApi = useCallback(async () => {
     const carsData = await getCars({ pageGarage });
     if (!carsData) {
@@ -29,6 +23,12 @@ export default function Garage() {
       setCars(carsData.cars);
     }
   }, [pageGarage]);
+
+  useEffect(() => {
+    if (cars.length === 0 && carsQuantity > 0) {
+      setPageGarage(pageGarage - 1);
+    }
+  }, [cars]);
 
   useEffect(() => {
     fetchApi();
