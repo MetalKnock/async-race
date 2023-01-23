@@ -1,8 +1,8 @@
 import React from 'react';
 import CreateCar from './CreateCar';
-import styles from './Inputs.module.scss';
 import RaceButtons from './RaceButtons';
 import UpdateCar from './UpdateCar';
+import styles from './Inputs.module.scss';
 
 export default function Inputs() {
   return (

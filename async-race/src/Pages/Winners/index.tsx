@@ -76,22 +76,23 @@ export default function Winners() {
   useEffect(() => {
     fetchApi(querySort);
   }, [fetchApi, querySort]);
+
   return (
     <div className={styles.winners}>
-      <h1 className={styles.garage__title}>Winners ({winnersQuantity})</h1>
+      <h1 className={styles.winners__title}>Winners ({winnersQuantity})</h1>
       <Pagination
         numberOfPages={Math.ceil(winnersQuantity / WINNERS_PER_PAGE)}
         page={pageWinners}
         setPage={setPageWinners}
         type={TYPE_PAGINATION.winners}
       />
-      <table>
-        <thead className={styles.winners__title}>
+      <table className={styles.winners__table}>
+        <thead className={styles.winners__tableTitle}>
           <tr className={styles.winners__line}>
-            <th className={styles.winners__cell}>PAGE</th>
+            <th className={styles.winners__cell}>№</th>
             <th className={styles.winners__cell}>
               <button
-                className={`${styles.winners__button} `}
+                className={`${styles.winners__button} button`}
                 type="button"
                 onClick={handleClickId}
               >
@@ -108,7 +109,11 @@ export default function Winners() {
             <th className={styles.winners__cell}>CAR</th>
             <th className={styles.winners__cell}>NAME</th>
             <th className={styles.winners__cell}>
-              <button className={styles.winners__button} type="button" onClick={handleClickWins}>
+              <button
+                className={`${styles.winners__button} button`}
+                type="button"
+                onClick={handleClickWins}
+              >
                 <span>WINS</span>
                 {querySort.sort === QUERY_SORT.wins && (
                   <ArrowIcon
@@ -120,7 +125,11 @@ export default function Winners() {
               </button>
             </th>
             <th className={styles.winners__cell}>
-              <button className={styles.winners__button} type="button" onClick={handleClickTime}>
+              <button
+                className={`${styles.winners__button} button`}
+                type="button"
+                onClick={handleClickTime}
+              >
                 <span>TIME</span>
                 {querySort.sort === QUERY_SORT.time && (
                   <ArrowIcon

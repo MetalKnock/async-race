@@ -57,6 +57,7 @@ export default function CreateCar() {
   return (
     <form className={styles.createCar} onSubmit={handleSubmitCreate}>
       <input
+        className={styles.createCar__input}
         type="text"
         ref={name}
         value={inputCreateCarName}
@@ -64,13 +65,18 @@ export default function CreateCar() {
         disabled={isStartedRace || isAnimatedCars.length !== 0}
       />
       <input
+        className={`${styles.createCar__input} ${styles.createCar__inputColor}`}
         type="color"
         ref={color}
         value={inputCreateCarColor}
         onChange={handleChangeColor}
         disabled={isStartedRace || isAnimatedCars.length !== 0}
       />
-      <button type="submit" disabled={isStartedRace || isAnimatedCars.length !== 0}>
+      <button
+        className="button"
+        type="submit"
+        disabled={isStartedRace || isAnimatedCars.length !== 0}
+      >
         CREATE
       </button>
     </form>

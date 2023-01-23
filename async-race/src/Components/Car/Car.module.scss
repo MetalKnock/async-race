@@ -1,7 +1,18 @@
+@import '../../scss/base/const.scss';
+
 .car {
+  margin: 20px 0;
+
+  &__header {
+    display: flex;
+    gap: $gap;
+    align-items: center;
+    //
+  }
+
   &__inner {
     display: flex;
-    gap: 10px;
+    gap: $gap;
     align-items: center;
   }
 

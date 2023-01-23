@@ -1,0 +1,7 @@
+@import '../../../scss/base/const.scss';
+
+.carControls {
+  display: flex;
+  gap: $gap;
+  align-items: center;
+}

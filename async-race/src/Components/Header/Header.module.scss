@@ -1,0 +1,41 @@
+@import '../../scss/base/const.scss';
+
+.header {
+  &__navigation {
+  }
+
+  &__list {
+    padding-left: 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__item {
+    list-style-type: none;
+  }
+
+  &__link {
+    color: $colorText;
+    display: block;
+    text-decoration: none;
+    padding: 10px 20px;
+    transition: $transition;
+    border-bottom: 1px solid transparent;
+    font-weight: 600;
+
+    &:hover {
+      color: $colorTextHover;
+    }
+
+    &_active {
+      color: $colorText;
+      border-bottom: 1px solid $colorText;
+      color: $colorText;
+      cursor: default;
+
+      &:hover {
+        color: $colorText;
+      }
+    }
+  }
+}

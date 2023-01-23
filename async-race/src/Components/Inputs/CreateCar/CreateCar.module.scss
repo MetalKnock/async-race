@@ -1,0 +1,21 @@
+@import '../../../scss/base/const.scss';
+
+.createCar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &__input {
+    border-radius: $borderRadius;
+    border: 1px solid $colorMain;
+
+    &Color {
+      cursor: pointer;
+    }
+
+    &:disabled {
+      border: 1px solid $colorDisabled;
+      cursor: default;
+    }
+  }
+}

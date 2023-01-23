@@ -129,17 +129,23 @@ export default function RaceButtons() {
   return (
     <div className={styles.raceButtons}>
       <button
+        className="button"
         type="button"
         onClick={handleClickStartRace}
         disabled={isStartedRace || isAnimatedCars.length !== 0}
       >
         START
       </button>
-      <button type="button" onClick={handleClickReset} disabled={isAnimatedCars.length === 0}>
+      <button
+        className="button"
+        type="button"
+        onClick={handleClickReset}
+        disabled={isAnimatedCars.length === 0}
+      >
         RESET
       </button>
       <button
-        className={styles.raceButtons__random}
+        className={`${styles.raceButtons__random} button`}
         type="button"
         disabled={isStartedRace || isAnimatedCars.length !== 0}
         onClick={handleClickRandomButton}

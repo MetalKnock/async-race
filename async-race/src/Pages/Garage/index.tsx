@@ -35,21 +35,26 @@ export default function Garage() {
   }, [fetchApi]);
 
   return (
-    <div className={styles.garage}>
-      <Inputs />
-      <h1 className={styles.garage__title}>Garage ({carsQuantity})</h1>
-      <Pagination
-        numberOfPages={Math.ceil(carsQuantity / CARS_PER_PAGE)}
-        page={pageGarage}
-        setPage={setPageGarage}
-        type={TYPE_PAGINATION.garage}
-      />
+    <main className={styles.garage}>
+      <div className={styles.garage__inner}>
+        <Inputs />
+        <div className={styles.garage__column}>
+          <h2 className={styles.garage__title}>Garage ({carsQuantity})</h2>
+          <Pagination
+            numberOfPages={Math.ceil(carsQuantity / CARS_PER_PAGE)}
+            page={pageGarage}
+            setPage={setPageGarage}
+            type={TYPE_PAGINATION.garage}
+          />
+        </div>
+      </div>
+
       <div className={styles.garage__cars}>
         {isOpenModal && <ModalWin />}
         {cars.map((car) => (
           <Car key={car.id} carsLength={cars.length} data={car} />
         ))}
       </div>
-    </div>
+    </main>
   );
 }

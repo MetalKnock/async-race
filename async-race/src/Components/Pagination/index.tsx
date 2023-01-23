@@ -33,28 +33,31 @@ export default function Pagination({ numberOfPages, page, type, setPage }: Pagin
 
   return (
     <div className={styles.pagination}>
-      <div className={styles.pagination__page}>page #{page}</div>
-      <button
-        className={styles.pagination__buttonPrev}
-        type="button"
-        disabled={page === 1 || isStartedRace || isAnimatedCars.length !== 0}
-        onClick={handleClickPrev}
-      >
-        PREV
-      </button>
-      <button
-        className={styles.pagination__buttonNext}
-        type="button"
-        disabled={
-          page === numberOfPages ||
-          numberOfPages === 0 ||
-          isStartedRace ||
-          isAnimatedCars.length !== 0
-        }
-        onClick={handleClickNext}
-      >
-        NEXT
-      </button>
+      <div className={styles.pagination__page}>PAGE {page}</div>
+
+      <div className={styles.pagination__inner}>
+        <button
+          className={`${styles.pagination__buttonPrev} button`}
+          type="button"
+          disabled={page === 1 || isStartedRace || isAnimatedCars.length !== 0}
+          onClick={handleClickPrev}
+        >
+          PREV
+        </button>
+        <button
+          className={`${styles.pagination__buttonNext} button`}
+          type="button"
+          disabled={
+            page === numberOfPages ||
+            numberOfPages === 0 ||
+            isStartedRace ||
+            isAnimatedCars.length !== 0
+          }
+          onClick={handleClickNext}
+        >
+          NEXT
+        </button>
+      </div>
     </div>
   );
 }

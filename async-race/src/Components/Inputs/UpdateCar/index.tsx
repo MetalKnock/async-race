@@ -60,6 +60,7 @@ export default function UpdateCar() {
   return (
     <form className={styles.updateCar} onSubmit={handleSubmitUpdate}>
       <input
+        className={styles.updateCar__input}
         type="text"
         ref={name}
         value={inputUpdateCarName}
@@ -67,6 +68,7 @@ export default function UpdateCar() {
         onChange={handleChangeName}
       />
       <input
+        className={`${styles.updateCar__input} ${styles.updateCar__inputColor}`}
         type="color"
         ref={color}
         value={inputUpdateCarColor}
@@ -74,6 +76,7 @@ export default function UpdateCar() {
         onChange={handleChangeColor}
       />
       <button
+        className="button"
         type="submit"
         disabled={selectedCar === INIT_SELECTED_CAR || isStartedRace || isAnimatedCars.length !== 0}
       >

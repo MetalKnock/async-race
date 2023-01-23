@@ -1,5 +1,31 @@
 .garage {
+  &__inner {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    gap: 20px;
+  }
+
+  &__column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__title {
+    margin: 0;
+  }
+
   &__cars {
     position: relative;
+    margin-top: 40px;
+  }
+}
+@media (max-width: 590px) {
+  .garage {
+    &__inner {
+      flex-direction: column;
+      align-items: center;
+    }
   }
 }

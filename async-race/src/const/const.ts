@@ -2,6 +2,11 @@ import { ICar, IQuerySort, IRaceEngine } from '../types/data';
 
 export const BASE = 'http://127.0.0.1:3000';
 
+export enum PATH_ROUTER {
+  garage = '/',
+  winners = '/winners',
+}
+
 export enum PATH {
   garage = '/garage',
   winners = '/winners',

@@ -68,7 +68,7 @@ export default function CarControls({ data }: CarControlsProps) {
     <div className={styles.carControls}>
       <button
         type="button"
-        className={styles.carControls__select}
+        className={`${styles.carControls__select} button`}
         disabled={selectedCar.id === data.id || isAnimatedCars.length !== 0 || isStartedRace}
         onClick={handleClickSelect}
       >
@@ -76,7 +76,7 @@ export default function CarControls({ data }: CarControlsProps) {
       </button>
       <button
         type="button"
-        className={styles.carControls__remove}
+        className={`${styles.carControls__remove} button`}
         disabled={isAnimatedCars.length !== 0 || isStartedRace}
         onClick={handleClickRemove}
       >

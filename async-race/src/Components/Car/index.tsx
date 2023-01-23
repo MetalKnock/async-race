@@ -137,7 +137,7 @@ export default function Car({ carsLength, data }: CarProps) {
       <div className={`${styles.car__track} ${styles.car__inner}`}>
         <button
           type="button"
-          className={styles.carControls__select}
+          className={`${styles.carControls__select} button`}
           disabled={Boolean(isAnimatedCars.find((car) => car.id === data.id)) || isStartedRace}
           onClick={handleClickStart}
         >
@@ -145,7 +145,7 @@ export default function Car({ carsLength, data }: CarProps) {
         </button>
         <button
           type="button"
-          className={styles.carControls__select}
+          className={`${styles.carControls__select} button`}
           disabled={
             Boolean(!isAnimatedCars.find((car) => car.id === data.id)) ||
             !engineReady ||

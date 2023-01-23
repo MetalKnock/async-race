@@ -1,3 +1,28 @@
+@import './base/const.scss';
+
 html {
-  background: white;
+  color: $colorText;
+}
+
+.wrapper {
+  margin: 0 20px;
+}
+
+.button {
+  border: none;
+  transition: $transition;
+  background: $colorMain;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  color: $colorText;
+
+  &:hover {
+    background: $colorHover;
+  }
+
+  &:disabled {
+    background: $colorDisabled;
+    cursor: default;
+  }
 }

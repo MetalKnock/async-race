@@ -1,0 +1,20 @@
+@import '../../scss/base/const.scss';
+
+.pagination {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+  align-items: center;
+  max-width: 150px;
+
+  &__page {
+    font-weight: 600;
+  }
+
+  &__inner {
+    display: flex;
+    gap: $gap;
+    justify-content: space-between;
+    width: 100%;
+  }
+}

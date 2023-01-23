@@ -1,5 +1,17 @@
+@import '../../scss/base/const.scss';
+
 .winners {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $gap;
+
   &__title {
+    text-align: center;
+  }
+
+  &__table {
+    width: 80%;
   }
 
   &__line {
@@ -7,18 +19,20 @@
 
   &__cell {
     font-weight: 600;
-    background: rgb(167, 167, 202);
+    background: $colorMain;
+    text-align: center;
+    border-radius: $borderRadius;
   }
 
   &__button {
     font-weight: 600;
-    display: flex;
+    width: 100%;
     align-items: center;
     position: relative;
     border: none;
     background: none;
     cursor: pointer;
-    padding: 10px 40px 10px 20px;
+    padding: 5px 40px;
   }
 
   &__arrowIcon {
@@ -33,10 +47,14 @@
   }
 }
 
-@media (max-width: 570px) {
+@media (max-width: 670px) {
   .winners {
+    &__table {
+      width: 100%;
+    }
+
     &__button {
-      padding: 10px 20px 10px 5px;
+      padding: 5px 20px 5px 5px;
     }
 
     &__arrowIcon {
@@ -57,6 +75,7 @@
 
     &__arrowIcon {
       width: 11px;
+      height: 15px;
     }
   }
 }
