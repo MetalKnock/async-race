@@ -21,7 +21,7 @@ export interface IGarageContext {
   inputCreateCarColor: string;
   finishedCars: IFinishedCars[];
   isOpenModal: boolean;
-  abortContollers: AbortController[];
+  abortControllers: AbortController[];
   isStartedRace: boolean;
   isAnimatedCars: IIsAnimatedCars[];
   setPageGarage: React.Dispatch<React.SetStateAction<number>>;

@@ -21,7 +21,7 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
   const [inputCreateCarColor, setInputCreateCarColor] = useState(DEFAULT_COLOR);
   const [finishedCars, setFinishedCars] = useState<IFinishedCars[]>([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [abortContollers, setAbortControllers] = useState<AbortController[]>([]);
+  const [abortControllers, setAbortControllers] = useState<AbortController[]>([]);
   const [isStartedRace, setIsStartedRace] = useState(false);
   const [isAnimatedCars, setIsAnimatedCars] = useState<IIsAnimatedCars[]>([]);
 
@@ -38,7 +38,7 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
       inputCreateCarColor,
       finishedCars,
       isOpenModal,
-      abortContollers,
+      abortControllers,
       isStartedRace,
       isAnimatedCars,
       setPageGarage,
@@ -68,7 +68,7 @@ export function GarageContextProvider({ children }: GarageContextProviderProps) 
       inputCreateCarColor,
       finishedCars,
       isOpenModal,
-      abortContollers,
+      abortControllers,
       isStartedRace,
       isAnimatedCars,
     ],

@@ -32,14 +32,14 @@ export default function Car({ carsLength, data }: CarProps) {
   const controller = useRef<AbortController | null>(null);
 
   const animation = (duration: number, callback: (progress: number) => void) => {
-    let startAmination: number | null = null;
+    let startAnimation: number | null = null;
 
     requestId.current = requestAnimationFrame(function measure(time) {
-      if (!startAmination) {
-        startAmination = time;
+      if (!startAnimation) {
+        startAnimation = time;
       }
 
-      const progress = (time - startAmination) / duration;
+      const progress = (time - startAnimation) / duration;
 
       callback(progress);
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { getCar } from '../../api/raceAPI';
 import { DIGITS_AFTER_DECIMAL_POINT_TIME } from '../../const/const';
 import useGarageContext from '../../hooks/useGarageContext';
 import { convertMillisecondsToSeconds } from '../../utils/common';

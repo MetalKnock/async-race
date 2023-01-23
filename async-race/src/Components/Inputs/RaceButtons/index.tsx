@@ -20,7 +20,7 @@ export default function RaceButtons() {
     finishedCars,
     pageGarage,
     raceEngines,
-    abortContollers,
+    abortControllers,
     isStartedRace,
     setCarsQuantity,
     setCars,
@@ -93,7 +93,7 @@ export default function RaceButtons() {
   };
 
   const handleClickReset = async () => {
-    abortContollers.map((val) => val.abort());
+    abortControllers.map((val) => val.abort());
     setAbortControllers([]);
     const carsData = await getCars({ pageGarage });
     if (!carsData) {
